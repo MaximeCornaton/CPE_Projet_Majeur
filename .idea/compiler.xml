@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="FleetManager" />
+        <module name="FireManager" />
+        <module name="projet_majeur" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="FireManager (1)" target="20" />
+      <module name="FireManager (2)" target="20" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="FireManager" options="-parameters" />
+      <module name="FireManager (1)" options="-parameters" />
+      <module name="FireManager (2)" options="-parameters" />
+      <module name="FleetManager" options="-parameters" />
+      <module name="projet_majeur" options="-parameters" />
+    </option>
+  </component>
+</project>

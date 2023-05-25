@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <fragment data-fragment="head" data-title="G8 - Tout feu tout flamme"></fragment>
+    <script src="../js/fragments-manager.js" defer></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../vendor/jquery/jquery.min.js" defer></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="../vendor/jquery-easing/jquery.easing.min.js" defer></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../js/sb-admin-2.min.js" defer></script>
+
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <fragment data-fragment="sidebar"></fragment>`
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <fragment data-fragment="topbar"></fragment>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800">Tableau de Bord</h1>
+
+                <!-- Map Card -->
+                <div class="card shadow mb-4" onclick="location.href='map.html';" style="cursor: pointer">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Carte de la Ville</h6>
+                    </div>
+                    <div class="card-body">
+                        <fragment data-fragment="map"></fragment>
+                        Voir Plus.
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <fragment data-fragment="footer"></fragment>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+</body>
+</html>
+
