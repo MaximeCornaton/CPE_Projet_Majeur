@@ -1,5 +1,5 @@
 # Ignore les fichiers .DS_Store
 .DS_Store
 
-# Ignore le fichier additionnal.properties
-additionnal.properties
+# Ignore le fichier additional.properties
+additional.properties
