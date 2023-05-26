@@ -83,7 +83,6 @@ public class VehicleRestClientService {
         return restTemplate.getForObject(builder.toUriString(), Double.class);
     }
 
-
     public void updateVehicle(int id, VehicleDto vehicleDto) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/vehicle/{uuid}/{id}";

@@ -14,12 +14,14 @@ public class VehicleService {
 
     private final VehicleRestClientService vehicleRestClientService;
     private final FacilityRestClientService facilityRestClientService;
+    private final FireRestClientService fireRestClientService;
     private final VehicleRepository vRepo;
 
 
-    public VehicleService(VehicleRestClientService vehicleRestClientService, FacilityRestClientService facilityRestClientService, VehicleRepository vRepo) {
+    public VehicleService(VehicleRestClientService vehicleRestClientService, FacilityRestClientService facilityRestClientService, FireRestClientService fireRestClientService, VehicleRepository vRepo) {
         this.vehicleRestClientService = vehicleRestClientService;
         this.facilityRestClientService = facilityRestClientService;
+        this.fireRestClientService = fireRestClientService;
         this.vRepo = vRepo;
     }
 
@@ -90,8 +92,6 @@ public class VehicleService {
         return vehicleRestClientService.getVehicleById(id);
     }
 
-
-
     public void startMoving(int id, Coord coord) {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
@@ -129,5 +129,36 @@ public class VehicleService {
             vehicleDto.setLiquidType(LiquidType.valueOf(liquidType));
             vehicleRestClientService.updateVehicle(id,vehicleDto);
         }
+    }
+
+    public void checkAllVehicles(){
+        List<VehicleDto> vehicleDtoList = vehicleRestClientService.getTeamVehicles();
+        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
+        for(VehicleDto vehicleDto : vehicleDtoList){
+            if(vehicleDto.getLiquidQuantity() < 1){
+                this.backToFacility(vehicleDto,facilityDto);
+            }
+            if(vehicleDto.getFuel() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
+                this.findFire(vehicleDto);
+            }
+        }
+    }
+
+    private void findFire(VehicleDto vehicleDto) {
+        List<FireDto> fireDtoList = fireRestClientService.getAllFires();
+        FireDto fireDto = fireDtoList.get(0);
+        double distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
+        for(FireDto fireDto1 : fireDtoList){
+            distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
+            if(this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto1.getLon(),fireDto1.getLat())) < distance){
+                fireDto = fireDto1;
+            }
+        }
+        this.startMoving(vehicleDto.getId(),new Coord(fireDto.getLon(),fireDto.getLat()));
+    }
+
+    private void backToFacility(VehicleDto vehicleDto, FacilityDto facilityDto) {
+        Coord coord = new Coord(facilityDto.getLon(), facilityDto.getLat());
+        startMoving(vehicleDto.getId(), coord);
     }
 }
