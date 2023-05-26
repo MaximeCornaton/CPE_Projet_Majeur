@@ -19,4 +19,19 @@ public class FireRestClientService {
         ResponseEntity<FireDto[]> responseEntity = restTemplate.getForEntity(url, FireDto[].class);
         return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
     }
+
+    public FireDto getFireDtoById(int id) {
+        RestTemplate restTemplate = new RestTemplate();
+        String Url = "http://vps.cpe-sn.fr:8081/fire/{id}";
+        FireDto fireDto = restTemplate.getForObject(Url, FireDto.class, id);
+        try {
+            if (fireDto == null) {
+                throw new Exception("No fire found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return fireDto;
+    }
 }

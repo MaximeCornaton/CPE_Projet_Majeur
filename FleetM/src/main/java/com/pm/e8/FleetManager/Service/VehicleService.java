@@ -7,22 +7,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class VehicleService {
 
     private final VehicleRestClientService vehicleRestClientService;
-    private final FacilityRestClientService facilityRestClientService;
-    private final FireRestClientService fireRestClientService;
     private final VehicleRepository vRepo;
 
+    private final FireRestClientService fireRestClientService;
+    private final FacilityRestClientService facilityRestClientService;
 
-    public VehicleService(VehicleRestClientService vehicleRestClientService, FacilityRestClientService facilityRestClientService, FireRestClientService fireRestClientService, VehicleRepository vRepo) {
+    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
-        this.facilityRestClientService = facilityRestClientService;
-        this.fireRestClientService = fireRestClientService;
         this.vRepo = vRepo;
+        this.fireRestClientService = fireRestClientService;
+        this.facilityRestClientService = facilityRestClientService;
     }
 
     public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
@@ -92,6 +94,8 @@ public class VehicleService {
         return vehicleRestClientService.getVehicleById(id);
     }
 
+
+
     public void startMoving(int id, Coord coord) {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
@@ -115,20 +119,13 @@ public class VehicleService {
         return fuelLevel/(fuelConsumption/100000);
     }
 
-    public boolean enoughFuel(VehicleDto vehicleDto, FireDto fireDto, FacilityDto facilityDto) {
+    public boolean enoughFuel(VehicleDto vehicleDto, int fireDtoId, int facilityDtoId) {
+        FireDto fireDto = fireRestClientService.getFireDtoById(fireDtoId);
+        FacilityDto facilityDto = facilityRestClientService.getFacilityDtoById(facilityDtoId);
         double distancePosFire = this.getDistance( new Coord(vehicleDto.getLon(), vehicleDto.getLat()), new Coord(fireDto.getLon(), fireDto.getLat()));
         double distanceFireFacility = this.getDistance( new Coord(fireDto.getLon(), fireDto.getLat()), new Coord(facilityDto.getLon(), facilityDto.getLat()));
 
         return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(vehicleDto);
-    }
-
-    public void updateVehicleLiquidType(int id, String liquidType) {
-        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
-        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
-        if(facilityDto.getLat() == vehicleDto.getLat() && facilityDto.getLon() == vehicleDto.getLon()) {
-            vehicleDto.setLiquidType(LiquidType.valueOf(liquidType));
-            vehicleRestClientService.updateVehicle(id,vehicleDto);
-        }
     }
 
     public void checkAllVehicles(){
@@ -160,5 +157,14 @@ public class VehicleService {
     private void backToFacility(VehicleDto vehicleDto, FacilityDto facilityDto) {
         Coord coord = new Coord(facilityDto.getLon(), facilityDto.getLat());
         startMoving(vehicleDto.getId(), coord);
+    }
+
+    public void updateVehicleLiquidType(int id, String liquidType) {
+        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
+        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
+        if(facilityDto.getLat() == vehicleDto.getLat() && facilityDto.getLon() == vehicleDto.getLon()) {
+            vehicleDto.setLiquidType(LiquidType.valueOf(liquidType));
+            vehicleRestClientService.updateVehicle(id,vehicleDto);
+        }
     }
 }
