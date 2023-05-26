@@ -8,10 +8,10 @@
 		<version>2.1.7.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.asi.equipe1</groupId>
+	<groupId>com.pm.e8</groupId>
 	<artifactId>ProxyServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SP-Compose-Proxy-Step3</name>
+	<name>Proxy-PM</name>
 	<description>Proxer application allowing to serve set of microservices</description>
 
 	<properties>
@@ -30,6 +30,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
