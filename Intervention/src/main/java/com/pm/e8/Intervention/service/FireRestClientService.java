@@ -22,7 +22,7 @@ public class FireRestClientService {
 
     public FireDto getFire(int fireId) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/fire/{id}";
+        String url = "http://localhost:8080/fires/{id}";
         ResponseEntity<FireDto> response = restTemplate.getForEntity(url, FireDto.class, fireId);
         if(response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();

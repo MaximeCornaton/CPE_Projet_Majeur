@@ -84,6 +84,24 @@ public class VehicleRestClientService {
     }
 
 
-
-
+    public void updateVehicle(int id, VehicleDto vehicleDto) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://vps.cpe-sn.fr:8081/vehicle/{uuid}/{id}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<VehicleDto> request = new HttpEntity<>(vehicleDto, headers);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("uuid", teamUuid);
+        params.put("id", String.valueOf(id));
+        ResponseEntity<VehicleDto> response = null;
+        try {
+            response = restTemplate.exchange(url, HttpMethod.PUT, request, VehicleDto.class, params);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.out.println("Error");
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        } catch (RestClientException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

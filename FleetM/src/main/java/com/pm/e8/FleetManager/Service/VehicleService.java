@@ -6,20 +6,20 @@ import com.project.model.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class VehicleService {
 
     private final VehicleRestClientService vehicleRestClientService;
+    private final FacilityRestClientService facilityRestClientService;
     private final VehicleRepository vRepo;
 
 
-    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo) {
+    public VehicleService(VehicleRestClientService vehicleRestClientService, FacilityRestClientService facilityRestClientService, VehicleRepository vRepo) {
         this.vehicleRestClientService = vehicleRestClientService;
+        this.facilityRestClientService = facilityRestClientService;
         this.vRepo = vRepo;
     }
 
@@ -120,5 +120,14 @@ public class VehicleService {
         double distanceFireFacility = this.getDistance( new Coord(fireDto.getLon(), fireDto.getLat()), new Coord(facilityDto.getLon(), facilityDto.getLat()));
 
         return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(vehicleDto);
+    }
+
+    public void updateVehicleLiquidType(int id, String liquidType) {
+        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
+        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
+        if(facilityDto.getLat() == vehicleDto.getLat() && facilityDto.getLon() == vehicleDto.getLon()) {
+            vehicleDto.setLiquidType(LiquidType.valueOf(liquidType));
+            vehicleRestClientService.updateVehicle(id,vehicleDto);
+        }
     }
 }

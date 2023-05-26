@@ -52,7 +52,7 @@ public class FireService {
     public Fire GetFireById(int idf) {
         Fire f;
         if (fRepo.findById(idf).isEmpty()) {
-            return null;
+            return fireRestClientService.getFire(idf);
         } else {
             f = fRepo.findById(idf).get();
         }
