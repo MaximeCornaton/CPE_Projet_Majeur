@@ -2,6 +2,7 @@ package com.pm.e8.FireManager.service;
 
 import com.pm.e8.FireManager.model.Fire;
 import com.pm.e8.FireManager.repository.FireRepository;
+import com.project.model.dto.Coord;
 import com.project.model.dto.FireDto;
 import org.springframework.stereotype.Service;
 import com.pm.e8.FireManager.model.Fire;
@@ -36,5 +37,25 @@ public class FireService {
             return "No fire found";
         }
         return f.get().getType();
+    }
+
+    public Coord GetFireCoord(int idf) {
+        Coord LonLat;
+        if (fRepo.findById(idf).isEmpty()) {
+            return null;
+        } else {
+            LonLat = fRepo.findById(idf).get().getCoord();
+        }
+        return LonLat;
+    }
+
+    public Fire GetFireById(int idf) {
+        Fire f;
+        if (fRepo.findById(idf).isEmpty()) {
+            return null;
+        } else {
+            f = fRepo.findById(idf).get();
+        }
+        return f;
     }
 }

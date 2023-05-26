@@ -1,5 +1,7 @@
 package com.pm.e8.FireManager.model;
 
+import com.project.model.dto.Coord;
+
 import javax.persistence.Id;
 public class Fire {
     @Id
@@ -57,6 +59,10 @@ public class Fire {
     }
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    public Coord getCoord() {
+        return new Coord(this.lon, this.lat);
     }
 
 }
