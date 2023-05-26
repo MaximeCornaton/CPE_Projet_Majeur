@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Fire {
     @Id
-    private Integer id;
+    private int id;
     private String type;
     private float intensity;
     private float range;
@@ -66,6 +66,12 @@ public class Fire {
 
     public Coord getCoord() {
         return new Coord(this.lon, this.lat);
+    }
+
+    @Override
+    public String toString() {
+       return "Fire [id=" + id + ", type=" + type + ", intensity=" + intensity + ", range=" + range + ", lon=" + lon
+                + ", lat=" + lat + "]";
     }
 
 }

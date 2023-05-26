@@ -27,14 +27,6 @@ public class FireRestClientService {
         return Arrays.asList(fireDtoList);
     }
 
-    public FireDto getNearestFire(FireDto fire) {
-        //TODO : get the nearest fire from the list
-        //setFireList();
-        FireDto NearestFire = new FireDto();
-
-        return NearestFire;
-    }
-
     public Fire getFire(int idf) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/fire/{id}";
