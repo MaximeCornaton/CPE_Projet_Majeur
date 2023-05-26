@@ -1,6 +1,8 @@
 package com.pm.e8.Intervention.service;
 
 import com.project.model.dto.Coord;
+import com.project.model.dto.FireDto;
+import com.project.model.dto.FireType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +17,7 @@ public class InterventionService {
     }
 
     public void createIntervention(int fireId, int vehicleId) {
-        Coord coord = fireRestClientService.getFireCoord(fireId);
-        vehicleRestClientService.createIntervention(vehicleId, coord);
+        FireDto fire = fireRestClientService.getFire(fireId);
+        vehicleRestClientService.createIntervention(vehicleId, new Coord(fire.getLon(),fire.getLat()));
     }
 }

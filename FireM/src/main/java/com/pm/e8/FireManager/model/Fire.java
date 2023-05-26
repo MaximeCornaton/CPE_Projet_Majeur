@@ -2,7 +2,10 @@ package com.pm.e8.FireManager.model;
 
 import com.project.model.dto.Coord;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
+
+@Entity
 public class Fire {
     @Id
     private Integer id;
