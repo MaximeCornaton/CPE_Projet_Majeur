@@ -7,22 +7,46 @@ function createFrame(){
     iframe.style.width = "100%";
     iframe.style.height = "100%";
 
-    getFires();
+    displayFires(iframe, getFires()); // Appel de la fonction displayFires avec les données des feux
 
     return iframe;
 }
 
-function getFires() {
-    fetch('http://localhost:8080/fires')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            // Faites quelque chose avec les données JSON récupérées ici
+function displayFires(iframe, firesPromise) {
+    firesPromise
+        .then(firesData => {
+            console.log(firesData);
+
+            firesData.forEach(fire => {
+                const { latitude, longitude } = fire;
+                console.log(latitude, longitude);
+                // Créer un marqueur de feu
+                const marker = new iframe.contentWindow.mapboxgl.Marker({ color: '#FF0000' })
+                    .setLngLat([longitude, latitude])
+                    .addTo(iframe.contentWindow.map); // Ajouter le marqueur à la carte de l'iframe
+            });
         })
         .catch(error => {
             console.error('Une erreur s\'est produite:', error);
         });
 }
+
+
+
+function getFires() {
+    return fetch('http://localhost:8000/fire-service/fires', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Une erreur s\'est produite:', error);
+        });
+}
+
+
 
 
 function getCaserne(){

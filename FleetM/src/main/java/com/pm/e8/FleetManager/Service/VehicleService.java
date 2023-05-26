@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class VehicleService {
 
     private final VehicleRestClientService vehicleRestClientService;
+
     private final VehicleRepository vRepo;
 
     private final FireRestClientService fireRestClientService;
@@ -22,9 +22,9 @@ public class VehicleService {
 
     public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
+        this.facilityRestClientService = facilityRestClientService;
         this.vRepo = vRepo;
         this.fireRestClientService = fireRestClientService;
-        this.facilityRestClientService = facilityRestClientService;
     }
 
     public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
@@ -126,5 +126,14 @@ public class VehicleService {
         double distanceFireFacility = this.getDistance( new Coord(fireDto.getLon(), fireDto.getLat()), new Coord(facilityDto.getLon(), facilityDto.getLat()));
 
         return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(vehicleDto);
+    }
+
+    public void updateVehicleLiquidType(int id, String liquidType) {
+        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
+        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
+        if(facilityDto.getLat() == vehicleDto.getLat() && facilityDto.getLon() == vehicleDto.getLon()) {
+            vehicleDto.setLiquidType(LiquidType.valueOf(liquidType));
+            vehicleRestClientService.updateVehicle(id,vehicleDto);
+        }
     }
 }

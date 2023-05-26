@@ -1,5 +1,6 @@
 package com.pm.e8.FireManager.service;
 
+import com.pm.e8.FireManager.model.Fire;
 import com.project.model.dto.FireDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,11 +27,9 @@ public class FireRestClientService {
         return Arrays.asList(fireDtoList);
     }
 
-    public FireDto getNearestFire(FireDto fire) {
-        //TODO : get the nearest fire from the list
-        //setFireList();
-        FireDto NearestFire = new FireDto();
-
-        return NearestFire;
+    public Fire getFire(int idf) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://vps.cpe-sn.fr:8081/fire/{id}";
+        return restTemplate.getForObject(url, Fire.class, idf);
     }
 }

@@ -41,7 +41,6 @@ function processMapFragment(fragmentElement, fragmentContent) {
 
     // Vider le contenu de l'élément fragment
     fragmentElement.innerHTML = "";
-
     // Ajouter l'iframe à la div #map dans l'élément fragment
     fragmentElement.appendChild(iframe);
 

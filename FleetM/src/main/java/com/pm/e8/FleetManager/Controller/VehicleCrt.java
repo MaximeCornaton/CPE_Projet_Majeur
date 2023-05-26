@@ -39,6 +39,11 @@ public class VehicleCrt {
         return vehicleService.getDistance(new Coord(lonCoord1, latCoord1), new Coord(lonCoord2, latCoord2));
     }
 
+    @PutMapping("/vehicle/{id}/liquidType")
+    public void updateVehicleLiquidType(@PathVariable int id, @RequestParam String liquidType){
+        vehicleService.updateVehicleLiquidType(id, liquidType);
+    }
+
     /*@RequestMapping(value="/vehicle/{id}/fuel", method= RequestMethod.GET)
     public float getFuelLevel(@RequestParam int id){
         if (vehicleService.getVehicleById(id) == id) {
