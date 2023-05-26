@@ -2,6 +2,8 @@ package com.pm.e8.FleetManager.Controller;
 
 import com.pm.e8.FleetManager.Service.VehicleService;
 import com.project.model.dto.Coord;
+import com.project.model.dto.FacilityDto;
+import com.project.model.dto.FireDto;
 import com.project.model.dto.VehicleDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,13 +39,18 @@ public class VehicleCrt {
         return vehicleService.getDistance(new Coord(lonCoord1, latCoord1), new Coord(lonCoord2, latCoord2));
     }
 
-    @RequestMapping(value="/vehicle/{id}/fuel", method= RequestMethod.GET)
+    /*@RequestMapping(value="/vehicle/{id}/fuel", method= RequestMethod.GET)
     public float getFuelLevel(@RequestParam int id){
-        if (vehicleService.getVehicle() == id) {
+        if (vehicleService.getVehicleById(id) == id) {
             return vehicleService.getFuelLevel();
         }else{
             return -1;
         }
+    }*/
+
+    @RequestMapping(value="/vehicle/{id}/enoughFuel", method= RequestMethod.GET)
+    public boolean enoughFuel(@PathVariable int vehicleId, @RequestParam FireDto fireDto, @RequestParam FacilityDto facilityDto){
+        return vehicleService.enoughFuel(vehicleService.getTeamVehicles().get(vehicleId), fireDto, facilityDto);
     }
 
 }

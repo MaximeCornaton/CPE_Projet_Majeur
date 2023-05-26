@@ -83,4 +83,7 @@ public class VehicleRestClientService {
         return restTemplate.getForObject(builder.toUriString(), Double.class);
     }
 
+
+
+
 }

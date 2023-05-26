@@ -2,8 +2,7 @@ package com.pm.e8.FleetManager.Service;
 
 import com.pm.e8.FleetManager.model.Vehicle;
 import com.pm.e8.FleetManager.repository.VehicleRepository;
-import com.project.model.dto.Coord;
-import com.project.model.dto.VehicleDto;
+import com.project.model.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ public class VehicleService {
 
     private final VehicleRestClientService vehicleRestClientService;
     private final VehicleRepository vRepo;
+
 
     public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo) {
         this.vehicleRestClientService = vehicleRestClientService;
@@ -78,8 +78,8 @@ public class VehicleService {
         }
     }
 
-    public float getFuelLevel() {
-        return 0.0f;
+    public float getFuelLevel(VehicleDto vehicleDto) {
+        return vehicleDto.getFuel();
     }
 
     public List<VehicleDto> getTeamVehicles() {
@@ -90,9 +90,7 @@ public class VehicleService {
         return vehicleRestClientService.getVehicleById(id);
     }
 
-    public int getVehicle() {
-        return 0;
-    }
+
 
     public void startMoving(int id, Coord coord) {
         VehicleDto vehicleDto = this.getVehicleById(id);
@@ -108,5 +106,19 @@ public class VehicleService {
 
     public double getDistance(Coord coord1, Coord coord2) {
         return vehicleRestClientService.getDistanceBetweenCoords(coord1, coord2);
+    }
+
+    public double getDistanceRealizable(VehicleDto vehicleDto) {
+        double fuelLevel = this.getFuelLevel(vehicleDto);
+        VehicleType vehicleType = vehicleDto.getType();
+        double fuelConsumption = vehicleType.getFuelConsumption();
+        return fuelLevel/(fuelConsumption/100000);
+    }
+
+    public boolean enoughFuel(VehicleDto vehicleDto, FireDto fireDto, FacilityDto facilityDto) {
+        double distancePosFire = this.getDistance( new Coord(vehicleDto.getLon(), vehicleDto.getLat()), new Coord(fireDto.getLon(), fireDto.getLat()));
+        double distanceFireFacility = this.getDistance( new Coord(fireDto.getLon(), fireDto.getLat()), new Coord(facilityDto.getLon(), facilityDto.getLat()));
+
+        return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(vehicleDto);
     }
 }
