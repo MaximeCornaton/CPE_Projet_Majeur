@@ -13,7 +13,12 @@ function createFrame(){
 }
 
 function getFires() {
-    fetch('http://localhost:8000/fire-service/fires')
+    fetch('http://localhost:8000/fire-service/fires', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
         .then(response => response.json())
         .then(data => {
             console.log(data);
