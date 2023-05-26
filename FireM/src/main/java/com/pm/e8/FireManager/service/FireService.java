@@ -1,5 +1,6 @@
 package com.pm.e8.FireManager.service;
 
+import com.google.common.collect.Lists;
 import com.pm.e8.FireManager.model.Fire;
 import com.pm.e8.FireManager.repository.FireRepository;
 import com.project.model.dto.Coord;
@@ -7,6 +8,7 @@ import com.project.model.dto.FireDto;
 import org.springframework.stereotype.Service;
 import com.pm.e8.FireManager.model.Fire;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +25,6 @@ public class FireService {
         return fireRestClientService.getAllFires();
     }
 
-
-    public FireDto getNearestFire(FireDto fire) {
-        //TODO : get the nearest fire from the list
-        FireDto NearestFire = new FireDto();
-
-        return NearestFire;
-    }
 
     public String getFireType(int idf){
         Optional<Fire> f = fRepo.findById(idf);
@@ -58,4 +53,33 @@ public class FireService {
         }
         return f;
     }
+
+    public List<Fire> getFireList() {
+        return Lists.newArrayList(fRepo.findAll());
+    }
+    List<Fire> FiresAround = new ArrayList<Fire>();
+    public List<Fire> getFiresAround(int idf, int radius) {
+        List<Fire> fList = getFireList();
+        Fire fire = null;
+
+        if(fRepo.findById(idf).isEmpty()){
+            return null;
+        }
+        else {
+            fire = fRepo.findById(idf).get();
+        }
+        for(Fire f : fList){
+            if(!f.equals(fire)){
+                if(distance(fire,f) <= radius){
+                    FiresAround.add(f);
+                }
+            }
+        }
+        return FiresAround;
+    }
+
+    public double distance(Fire f1, Fire f2){
+        return Math.sqrt(Math.pow(f1.getCoord().getLon() - f2.getCoord().getLon(),2) + Math.pow(f1.getCoord().getLat() - f2.getCoord().getLat(),2));
+    }
+
 }
