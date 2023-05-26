@@ -6,7 +6,7 @@ import com.project.model.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,14 @@ public class VehicleService {
     private final VehicleRestClientService vehicleRestClientService;
     private final VehicleRepository vRepo;
 
+    private final FireRestClientService fireRestClientService;
+    private final FacilityRestClientService facilityRestClientService;
 
-    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo) {
+    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
         this.vRepo = vRepo;
+        this.fireRestClientService = fireRestClientService;
+        this.facilityRestClientService = facilityRestClientService;
     }
 
     public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
@@ -115,7 +119,9 @@ public class VehicleService {
         return fuelLevel/(fuelConsumption/100000);
     }
 
-    public boolean enoughFuel(VehicleDto vehicleDto, FireDto fireDto, FacilityDto facilityDto) {
+    public boolean enoughFuel(VehicleDto vehicleDto, int fireDtoId, int facilityDtoId) {
+        FireDto fireDto = fireRestClientService.getFireDtoById(fireDtoId);
+        FacilityDto facilityDto = facilityRestClientService.getFacilityDtoById(facilityDtoId);
         double distancePosFire = this.getDistance( new Coord(vehicleDto.getLon(), vehicleDto.getLat()), new Coord(fireDto.getLon(), fireDto.getLat()));
         double distanceFireFacility = this.getDistance( new Coord(fireDto.getLon(), fireDto.getLat()), new Coord(facilityDto.getLon(), facilityDto.getLat()));
 

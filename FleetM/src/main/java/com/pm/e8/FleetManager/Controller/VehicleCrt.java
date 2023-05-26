@@ -49,8 +49,8 @@ public class VehicleCrt {
     }*/
 
     @RequestMapping(value="/vehicle/{id}/enoughFuel", method= RequestMethod.GET)
-    public boolean enoughFuel(@PathVariable int vehicleId, @RequestParam FireDto fireDto, @RequestParam FacilityDto facilityDto){
-        return vehicleService.enoughFuel(vehicleService.getTeamVehicles().get(vehicleId), fireDto, facilityDto);
+    public boolean enoughFuel(@PathVariable int id, @RequestParam int fireDtoId, @RequestParam int facilityDtoId){
+        return vehicleService.enoughFuel(vehicleService.getVehicleById(id), fireDtoId, facilityDtoId);
     }
 
 }
