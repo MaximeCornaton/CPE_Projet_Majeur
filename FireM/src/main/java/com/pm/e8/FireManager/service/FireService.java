@@ -5,8 +5,11 @@ import com.pm.e8.FireManager.model.Fire;
 import com.pm.e8.FireManager.repository.FireRepository;
 import com.project.model.dto.Coord;
 import com.project.model.dto.FireDto;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 import com.pm.e8.FireManager.model.Fire;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +38,12 @@ public class FireService {
     }
 
     public Coord GetFireCoord(int idf) {
-        Coord LonLat;
+        Coord LonLat = new Coord();
         if (fRepo.findById(idf).isEmpty()) {
             return null;
         } else {
-            LonLat = fRepo.findById(idf).get().getCoord();
+            LonLat.setLat(fRepo.findById(idf).get().getLat());
+            LonLat.setLon(fRepo.findById(idf).get().getLon());
         }
         return LonLat;
     }
@@ -79,7 +83,18 @@ public class FireService {
     }
 
     public double distance(Fire f1, Fire f2){
-        return Math.sqrt(Math.pow(f1.getCoord().getLon() - f2.getCoord().getLon(),2) + Math.pow(f1.getCoord().getLat() - f2.getCoord().getLat(),2));
+        return getDistanceBetweenCoords(new Coord(f1.getLat(),f1.getLon()),new Coord(f2.getLat(),f2.getLon()));
+    }
+
+    public Double getDistanceBetweenCoords(Coord coord1,Coord coord2){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://vps.cpe-sn.fr:8081/fire/distance";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("latCoord1", coord1.getLat())
+                .queryParam("lonCoord1", coord1.getLon())
+                .queryParam("latCoord2", coord2.getLat())
+                .queryParam("lonCoord2", coord2.getLon());
+        return restTemplate.getForObject(builder.toUriString(), Double.class);
     }
 
 }

@@ -21,10 +21,6 @@ public class FireScheduler {
 
     @Scheduled(fixedRate = 2000)
     public void UpdateBDD() {
-        System.out.println("Updating BDD");
-        //RestTemplate restTemplate = new RestTemplate();
-        //String Url = "http://vps.cpe-sn.fr:8081/fires";
-        //List<Fire> fireList = restTemplate.getForObject(Url, List.class);
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/fires";
         ResponseEntity<List<Fire>> response = restTemplate.exchange(

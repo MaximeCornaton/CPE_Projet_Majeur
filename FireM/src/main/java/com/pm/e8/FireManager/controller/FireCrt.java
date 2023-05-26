@@ -32,9 +32,9 @@ public class FireCrt {
         return fServ.GetFireCoord(idf);
     }
 
-    @GetMapping("/fireAround")
-    public List<Fire> getFireAround(){
-        return fServ.getFireList();
+    @GetMapping("/fireAround/{idf}/{radius}")
+    public List<Fire> getFireAround(@PathVariable int idf, @PathVariable int radius){
+        return fServ.getFiresAround(idf, radius);
     }
 
 
