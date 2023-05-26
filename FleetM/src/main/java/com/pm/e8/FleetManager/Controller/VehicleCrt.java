@@ -28,8 +28,13 @@ public class VehicleCrt {
     }
 
     @PutMapping("/vehicle/move/{id}")
-    public ResponseEntity<VehicleDto> moveVehicle(@PathVariable int id, @RequestBody Coord coord){
-        return vehicleService.moveVehicle(id, coord);
+    public void moveVehicle(@PathVariable int id, @RequestBody Coord coord){
+        vehicleService.startMoving(id, coord);
+    }
+
+    @GetMapping("/vehicle/distance")
+    public double getDistance(@RequestParam double latCoord1, double lonCoord1, double latCoord2, double lonCoord2){
+        return vehicleService.getDistance(new Coord(lonCoord1, latCoord1), new Coord(lonCoord2, latCoord2));
     }
 
     @RequestMapping(value="/vehicle/{id}/fuel", method= RequestMethod.GET)

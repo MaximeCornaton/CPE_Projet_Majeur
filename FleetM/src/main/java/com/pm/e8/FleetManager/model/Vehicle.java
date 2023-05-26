@@ -21,9 +21,9 @@ public class Vehicle {
     private int crewMember;
     private Integer facilityRefID;
     @Column(nullable = true)
-    private double futureLon;
+    private Double futureLon;
     @Column(nullable = true)
-    private double futureLat;
+    private Double futureLat;
 
     public Vehicle() {
     }
@@ -112,11 +112,11 @@ public class Vehicle {
         this.facilityRefID = facilityRefID;
     }
 
-    public double getFutureLon() {
+    public Double getFutureLon() {
         return futureLon;
     }
 
-    public void setFutureLon(double futureLon) {
+    public void setFutureLon(Double futureLon) {
         this.futureLon = futureLon;
     }
 
@@ -124,7 +124,24 @@ public class Vehicle {
         return futureLat;
     }
 
-    public void setFutureLat(double futureLat) {
+    public void setFutureLat(Double futureLat) {
         this.futureLat = futureLat;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id=" + id +
+                ", lon=" + lon +
+                ", lat=" + lat +
+                ", type=" + type +
+                ", liquidType=" + liquidType +
+                ", liquidQuantity=" + liquidQuantity +
+                ", fuel=" + fuel +
+                ", crewMember=" + crewMember +
+                ", facilityRefID=" + facilityRefID +
+                ", futureLon=" + futureLon +
+                ", futureLat=" + futureLat +
+                '}';
     }
 }

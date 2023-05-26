@@ -1,7 +1,6 @@
 package com.pm.e8.FleetManager.Service;
 
 import com.project.model.dto.Coord;
-import com.project.model.dto.FireDto;
 import com.project.model.dto.VehicleDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -10,13 +9,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
 @Service
 public class VehicleRestClientService {
 
-    @Value("${team.uuid}")
+    @Value(value = "${team.uuid}")
     private String teamUuid;
 
     public List<VehicleDto> getTeamVehicles() {
@@ -62,6 +63,7 @@ public class VehicleRestClientService {
         try {
             response = restTemplate.exchange(url, HttpMethod.PUT, request, VehicleDto.class, params);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
+            System.out.println("Error");
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());
         } catch (RestClientException e) {
@@ -69,4 +71,16 @@ public class VehicleRestClientService {
         }
         return response;
     }
+
+    public Double getDistanceBetweenCoords(Coord coord1,Coord coord2){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://vps.cpe-sn.fr:8081/fire/distance";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("latCoord1", coord1.getLat())
+                .queryParam("lonCoord1", coord1.getLon())
+                .queryParam("latCoord2", coord2.getLat())
+                .queryParam("lonCoord2", coord2.getLon());
+        return restTemplate.getForObject(builder.toUriString(), Double.class);
+    }
+
 }
