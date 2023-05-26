@@ -28,7 +28,7 @@ public class FireRestClientService {
 
     public FireDto getNearestFire(FireDto fire) {
         //TODO : get the nearest fire from the list
-        setFireList();
+        //setFireList();
         FireDto NearestFire = new FireDto();
 
         return NearestFire;
