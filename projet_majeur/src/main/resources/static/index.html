@@ -3,6 +3,10 @@
 
 <head>
     <fragment data-fragment="head" data-title="G8 - Tout feu tout flamme"></fragment>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <script src="../js/fragments-manager.js" defer></script>
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js" defer></script>
@@ -48,7 +52,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Carte de la Ville</h6>
                     </div>
                     <div class="card-body">
-                        <fragment data-fragment="map"></fragment>
+                        <div id="map" style="height: 100%; width: 100%"></div>
                         Voir Plus.
                     </div>
                 </div>
