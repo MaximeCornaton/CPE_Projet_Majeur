@@ -64,10 +64,6 @@ public class Fire {
         this.lat = lat;
     }
 
-    public Coord getCoord() {
-        return new Coord(this.lon, this.lat);
-    }
-
     @Override
     public String toString() {
        return "Fire [id=" + id + ", type=" + type + ", intensity=" + intensity + ", range=" + range + ", lon=" + lon
