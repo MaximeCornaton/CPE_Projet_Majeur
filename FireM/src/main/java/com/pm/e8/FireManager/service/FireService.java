@@ -11,6 +11,11 @@ import java.util.List;
 @Service
 public class FireService {
     private List fireDtoList = new ArrayList<FireDto>();
+    private final FireRestClientService fireRestClientService;
+
+    public FireService(FireRestClientService fireRestClientService) {
+        this.fireRestClientService = fireRestClientService;
+    }
 
     public void setFireList() {
         RestTemplate restTemplate = new RestTemplate();
@@ -18,9 +23,8 @@ public class FireService {
         fireDtoList  = restTemplate.getForObject(Url, List.class);
     }
 
-    public List getFireDtoList() {
-        setFireList();
-        return fireDtoList;
+    public List<FireDto> getFireDtoList() {
+        return fireRestClientService.getAllFires();
     }
 
     public FireDto getNearestFire(FireDto fire) {

@@ -1,5 +1,6 @@
 package com.pm.e8.FireManager.controller;
 
+import com.project.model.dto.FireDto;
 import org.springframework.web.bind.annotation.RestController;
 import com.pm.e8.FireManager.service.FireService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ public class FireCrt {
     }
 
     @GetMapping("/fires")
-    public List getFires() {
+    public List<FireDto> getFires() {
         return fServ.getFireDtoList();
     }
 
