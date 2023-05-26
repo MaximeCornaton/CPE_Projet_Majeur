@@ -9,6 +9,7 @@
         <module name="FleetManager" />
         <module name="FireManager" />
         <module name="projet_majeur" />
+        <module name="ProxyServer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -22,6 +23,7 @@
       <module name="FireManager (1)" options="-parameters" />
       <module name="FireManager (2)" options="-parameters" />
       <module name="FleetManager" options="-parameters" />
+      <module name="ProxyServer" options="-parameters" />
       <module name="projet_majeur" options="-parameters" />
     </option>
   </component>
