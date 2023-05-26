@@ -3,3 +3,6 @@
 
 # Ignore le fichier additional.properties
 additional.properties
+
+# Ignore les fichiers application.properties
+**/application.properties
