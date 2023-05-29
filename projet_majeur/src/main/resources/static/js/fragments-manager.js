@@ -33,6 +33,5 @@ for (let i = 0; i < fragmentElements.length; i++) {
     loadFragment(fragmentElement, fragmentName);
 }
 
-map = createMap('map');
-displayFires(map);
+
 
