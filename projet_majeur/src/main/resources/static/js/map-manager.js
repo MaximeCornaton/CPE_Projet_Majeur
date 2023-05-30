@@ -1,25 +1,27 @@
 
 function createMap(divId) {
-    console.log(divId);
     let map = L.map(divId).setView([45.7735, 4.8745], 13);
-
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    L.tileLayer('https://api.mapbox.com/styles/v1/maximecrnt/cli36w9f700ko01pgahnu8l6o/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWF4aW1lY3JudCIsImEiOiJjbGkzNmdzbW4wcTJtM2ZvM2Z4azYxbTcwIn0.AmmVszgHGmq9KMbzdmhe7A', {
         attribution: 'Map data &copy; <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
-        id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
-
-        accessToken: 'pk.eyJ1IjoibWF4aW1lY3JudCIsImEiOiJjbGkzNmdzbW4wcTJtM2ZvM2Z4azYxbTcwIn0.AmmVszgHGmq9KMbzdmhe7A'
     }).addTo(map);
 
     return map;
 }
 
+
 function displayFires(map) {
 getFires().then(fires => {
         fires.forEach(fire => {
-            L.marker([fire.lat, fire.lon]).addTo(map)
+            const icon = L.icon({
+                iconUrl: '../img/icons/fire.gif', // Remplacez par l'URL de votre image de camion de pompier
+                iconSize: [32, 32], // Taille de l'icône en pixels
+                iconAnchor: [16, 16], // Point d'ancrage de l'icône en pixels
+            });
+
+            L.marker([fire.lat, fire.lon], { icon: icon }).addTo(map)
                 .bindPopup('Feu')
                 .openPopup();
         });
