@@ -30,7 +30,7 @@ function displayVehicles(map) {
     getVehicles().then(vehicles => {
         vehicles.forEach(vehicle => {
             const icon = L.icon({
-                iconUrl: 'URL_DE_VOTRE_IMAGE_CAMION', // Remplacez par l'URL de votre image de camion de pompier
+                iconUrl: '../img/icons/fire-truck.png', // Remplacez par l'URL de votre image de camion de pompier
                 iconSize: [32, 32], // Taille de l'icône en pixels
                 iconAnchor: [16, 16], // Point d'ancrage de l'icône en pixels
             });
