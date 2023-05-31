@@ -45,34 +45,6 @@ function displayVehicles(map) {
 }
 
 
-
-function getFires() {
-    return fetch('http://localhost:8000/fire-service/fires', {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        },
-    })
-        .then(response => response.json())
-        .catch(error => {
-            console.error('Une erreur s\'est produite:', error);
-        });
-}
-
-function getVehicles() {
-    return fetch('http://localhost:8000/fleet-service/vehicles', {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        },
-    })
-        .then(response => response.json())
-        .catch(error => {
-            console.error('Une erreur s\'est produite:', error);
-        });
-}
-
-
 map = createMap('map');
 displayFires(map);
 displayVehicles(map);
