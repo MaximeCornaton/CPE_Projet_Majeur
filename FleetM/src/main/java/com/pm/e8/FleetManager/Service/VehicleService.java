@@ -1,5 +1,6 @@
 package com.pm.e8.FleetManager.Service;
 
+import com.pm.e8.FleetManager.exception.NotEnoughFuelException;
 import com.pm.e8.FleetManager.model.Coordonnees;
 import com.pm.e8.FleetManager.model.Vehicle;
 import com.pm.e8.FleetManager.repository.CoordonneesRepository;
@@ -78,7 +79,7 @@ public class VehicleService {
         Vehicle vehicle = new Vehicle(vehicleDto);
         String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
         if(!hasEnoughFuel(vehicle,coord)){
-            throw new RuntimeException("Not enough fuel");
+            throw new NotEnoughFuelException("Not enough fuel");
         }
         List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> futurCoordList = new ArrayList<>();
