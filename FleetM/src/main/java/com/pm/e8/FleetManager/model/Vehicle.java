@@ -3,14 +3,13 @@ package com.pm.e8.FleetManager.model;
 import com.project.model.dto.LiquidType;
 import com.project.model.dto.VehicleDto;
 import com.project.model.dto.VehicleType;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.List;
+import javax.persistence.*;
 
 @Entity
 public class Vehicle {
     @Id
+    @Column(name = "vehicle_id")
     private Integer id;
     private double lon;
     private double lat;
@@ -20,10 +19,10 @@ public class Vehicle {
     private float fuel;
     private int crewMember;
     private Integer facilityRefID;
-    @Column(nullable = true)
-    private Double futureLon;
-    @Column(nullable = true)
-    private Double futureLat;
+    public Double futureLon;
+    public Double futureLat;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "vehicle")
+    private List<Coordonnees> coordonneesList;
 
     public Vehicle() {
     }
@@ -126,6 +125,14 @@ public class Vehicle {
 
     public void setFutureLat(Double futureLat) {
         this.futureLat = futureLat;
+    }
+
+    public List<Coordonnees> getCoordonnees() {
+        return coordonneesList;
+    }
+
+    public void setCoordonnees(List<Coordonnees> coordonneesList) {
+        this.coordonneesList = coordonneesList;
     }
 
     @Override
