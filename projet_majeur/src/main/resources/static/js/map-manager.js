@@ -43,7 +43,7 @@ function createMap(divId) {
 function displayFireStation(map) {
     getFireStation().then(fireStation => {
 
-        // Supprimer les véhicules qui n'existent plus
+        // Supprimer les stations qui n'existent plus
         for (const id in fireStationMarkers) {
             if (!fireStation.some(fireStation => fireStation.id === id)) {
                 removeFireStation(map, id);
@@ -190,10 +190,11 @@ function removeFireStation(map, id) {
 function displayData(map) {
     displayFires(map);
     displayVehicles(map);
-    displayFireStation(map);
 }
 
 displayData(map);
+displayFireStation(map);
+
 setInterval(function() {
     displayData(map);
 }, 1000);
