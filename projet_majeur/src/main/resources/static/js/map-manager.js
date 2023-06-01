@@ -1,3 +1,25 @@
+map = createMap('map');
+let vehicleMarkers = {};
+let fireMarkers = {};
+
+const icon_fire_truck = L.icon({
+    iconUrl: '../img/icons/fire-truck.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
+const icon_fire_truck_moving = L.icon({
+    iconUrl: '../img/icons/fire-truck.gif',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
+const icon_fire = L.icon({
+    iconUrl: '../img/icons/fire.gif',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
 
 function createMap(divId) {
     let map = L.map(divId).setView([45.7735, 4.8745], 13);
@@ -11,81 +33,89 @@ function createMap(divId) {
     return map;
 }
 
-
 function displayFires(map) {
-getFires().then(fires => {
-        fires.forEach(fire => {
-            const icon = L.icon({
-                iconUrl: '../img/icons/fire.gif',
-                iconSize: [32, 32],
-                iconAnchor: [16, 16],
-            });
+    getFires().then(fires => {
+        // Supprimer les feux existants de la carte
+        for (const id in fireMarkers) {
+            if (!fires.some(fire => fire.id === id)) {
+                const marker = fireMarkers[id];
+                map.removeLayer(marker);
+                delete fireMarkers[id];
+            }
+        }
 
-            L.marker([fire.lat, fire.lon], { icon: icon }).addTo(map);
+        // Ajouter ou mettre à jour les marqueurs des nouveaux feux
+        fires.forEach(fire => {
+            if (fire.id in fireMarkers) {
+                // Le feu existe déjà, aucune mise à jour nécessaire
+                return;
+            }
+
+            const marker = L.marker([fire.lat, fire.lon], { icon: icon_fire }).addTo(map);
 
             const popupContent = `
                 <strong>ID:</strong> ${fire.id}<br>
-                
             `;
 
             marker.bindPopup(popupContent);
 
-            marker.on('click', function() {
-                const newIcon = L.icon({
-                    iconUrl: '../img/icons/fire.gif',
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20],
-                });
-                marker.setIcon(newIcon);
-            });
-
-            marker.on('popupclose', function() {
-                marker.setIcon(icon);
-            });
-
+            fireMarkers[fire.id] = marker;
         });
     });
 }
+
 
 function displayVehicles(map) {
     getVehicles().then(vehicles => {
+        // Supprimer les véhicules existants de la carte
+        for (const id in vehicleMarkers) {
+            if (!vehicles.some(vehicle => vehicle.id === id)) {
+                const marker = vehicleMarkers[id];
+                map.removeLayer(marker);
+                delete vehicleMarkers[id];
+            }
+        }
+
         vehicles.forEach(vehicle => {
-            const icon = L.icon({
-                iconUrl: '../img/icons/fire-truck.png',
-                iconSize: [32, 32],
-                iconAnchor: [16, 16],
-            });
+            if (vehicle.id in vehicleMarkers) {
+                // Mettre à jour la position du marqueur existant
+                const marker = vehicleMarkers[vehicle.id];
+                marker.setLatLng([vehicle.lat, vehicle.lon]);
 
-            const marker = L.marker([vehicle.lat, vehicle.lon], { icon: icon }).addTo(map);
+                //Si la position du vehicule est differente de se pasotion precedente
+                if (marker.getLatLng().lat != vehicle.lat || marker.getLatLng().lng != vehicle.lon) {
+                    marker.setIcon(icon_fire_truck_moving);
+                }else {
+                    marker.setIcon(icon_fire_truck);
+                }
+            } else {
+                const marker = L.marker([vehicle.lat, vehicle.lon], { icon: icon_fire_truck }).addTo(map);
 
-            const popupContent = `
-                <strong>ID:</strong> ${vehicle.id}<br>
-                <strong>Type:</strong> ${vehicle.type}<br>
-                <strong>Type de Liquide:</strong> ${vehicle.liquidType}<br>
-                <strong>Quantit&#xE9 de Liquide:</strong> ${vehicle.liquidQuantity}<br>
-                <strong>Essence:</strong> ${vehicle.fuel}<br>
-            `;
+                const popupContent = `
+                    <strong>ID:</strong> ${vehicle.id}<br>
+                    <strong>Type:</strong> ${vehicle.type}<br>
+                    <strong>Type de Liquide:</strong> ${vehicle.liquidType}<br>
+                    <strong>Quantit&#xE9 de Liquide:</strong> ${vehicle.liquidQuantity}<br>
+                    <strong>Essence:</strong> ${vehicle.fuel}<br>
+                `;
 
-            marker.bindPopup(popupContent);
+                marker.bindPopup(popupContent);
 
-            marker.on('popupopen', function() {
-                // Changez l'icône du camion lorsque le marqueur est cliqué
-                const newIcon = L.icon({
-                    iconUrl: '../img/icons/fire-truck.gif',
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20],
-                });
-                marker.setIcon(newIcon);
-            });
-
-            marker.on('popupclose', function() {
-                marker.setIcon(icon);
-            });
-
+                vehicleMarkers[vehicle.id] = marker;
+            }
         });
     });
 }
 
-map = createMap('map');
-displayFires(map);
-displayVehicles(map);
+
+function displayData(map) {
+    displayFires(map);
+    displayVehicles(map);
+}
+
+displayData(map);
+setInterval(function() {
+    displayData(map);
+}, 1000);
+
+
