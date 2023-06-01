@@ -1,6 +1,7 @@
 map = createMap('map');
 let vehicleMarkers = {};
 let fireMarkers = {};
+let fireStationMarkers = {};
 
 const icon_fire_truck = L.icon({
     iconUrl: '../img/icons/fire-truck.png',
@@ -20,6 +21,12 @@ const icon_fire = L.icon({
     iconAnchor: [16, 16],
 });
 
+const icon_fire_station = L.icon({
+    iconUrl: '../img/icons/fire-station.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
 //fonction qui cree la carte
 function createMap(divId) {
     let map = L.map(divId).setView([45.7735, 4.8745], 13);
@@ -31,6 +38,34 @@ function createMap(divId) {
     }).addTo(map);
     return map;
 }
+
+//foction qui affiche la caserne
+function displayFireStation(map) {
+    getFireStation().then(fireStation => {
+
+        // Supprimer les véhicules qui n'existent plus
+        for (const id in fireStationMarkers) {
+            if (!fireStation.some(fireStation => fireStation.id === id)) {
+                removeFireStation(map, id);
+            }
+        }
+
+        fireStation.forEach(fireStation => {
+
+        const marker = L.marker([fireStation.lat, fireStation.lon], { icon: icon_fire_station }).addTo(map);
+
+        const popupContent = `
+            <strong>ID:</strong> ${fireStation.id}<br>
+            <strong>Nom:</strong> ${fireStation.name}<br>
+            <strong>Capacité:</strong> ${fireStation.peopleCapacity}<br>
+        `;
+
+        marker.bindPopup(popupContent);
+        fireStationMarkers[fireStation.id] = marker;
+    });
+    });
+}
+
 
 //fonction qui affiche les feux
 function displayFires(map) {
@@ -135,10 +170,27 @@ function removeVehicle(map, id) {
     delete vehicleMarkers[id];
 }
 
+//fonction qui desaffiche la caserne de la carte
+function removeFireStations(map) {
+    for (const id in fireStationMarkers) {
+        const marker = fireStationMarkers[id];
+        map.removeLayer(marker);
+        delete fireStationMarkers[id];
+    }
+}
+
+//fonction qui desaffiche une caserne de la carte
+function removeFireStation(map, id) {
+    const marker = fireStationMarkers[id];
+    map.removeLayer(marker);
+    delete fireStationMarkers[id];
+}
+
 //fonction qui affiche les feux et les vehicules sur la carte
 function displayData(map) {
     displayFires(map);
     displayVehicles(map);
+    displayFireStation(map);
 }
 
 displayData(map);
