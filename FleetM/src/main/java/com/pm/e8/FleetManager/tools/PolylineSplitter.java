@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.EncodedPolyline;
+import com.mapbox.geojson.Point;
 import com.project.model.dto.Coord;
+import com.mapbox.geojson.utils.PolylineUtils;
 
 public class PolylineSplitter {
 
@@ -36,14 +38,13 @@ public class PolylineSplitter {
     }
 
     public static List<Coord> cutPolyline(String polyline, double distance) {
-        List<Coord> latLngList = decodePolyline(polyline);
-
+        List<Point> pointsList = PolylineUtils.decode(polyline,6);
         List<Coord> coordList = new ArrayList<>();
         Coord previousCoord = null;
-        for (Coord latLng : latLngList) {
+        for (Point latLng : pointsList) {
             Coord currentCoord = new Coord();
-            currentCoord.setLat(latLng.getLat());
-            currentCoord.setLon(latLng.getLon());
+            currentCoord.setLat(latLng.latitude());
+            currentCoord.setLon(latLng.longitude());
             if (previousCoord != null) {
                 double d = calculateDistance(previousCoord, currentCoord);
                 for (double i = distance; i < d; i += distance) {

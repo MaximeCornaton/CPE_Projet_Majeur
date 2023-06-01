@@ -76,7 +76,7 @@ public class VehicleService {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
         String polyline = mapRestClientService.getPolylines(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
-        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed());
+        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> futurCoordList = new ArrayList<>();
         for(Coord c : coordList){
             Coordonnees tempCoord = new Coordonnees(c.getLon(),c.getLat());

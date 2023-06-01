@@ -20,7 +20,7 @@ public class MapRestClientService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .path("/{lon1},{lat1};{lon2},{lat2}")
                 .queryParam("alternatives", false)
-                .queryParam("geometries", "polyline")
+                .queryParam("geometries", "polyline6")
                 .queryParam("steps", false)
                 .queryParam("access_token", accessToken);
 
@@ -32,6 +32,7 @@ public class MapRestClientService {
         ).toUriString();
 
         String jsonResponse = restTemplate.getForObject(url, String.class);
+        System.out.println(jsonResponse);
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
 
