@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -58,8 +59,8 @@ public class VehicleService {
         }
     }
 
-    public float getFuelLevel(VehicleDto vehicleDto) {
-        return vehicleDto.getFuel();
+    public float getFuelLevel(Vehicle vehicle) {
+        return vehicle.getFuel();
     }
 
     public List<VehicleDto> getTeamVehicles() {
@@ -75,7 +76,10 @@ public class VehicleService {
     public void startMoving(int id, Coord coord) {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
-        String polyline = mapRestClientService.getPolylines(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
+        String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
+        if(!hasEnoughFuel(vehicle,coord)){
+            throw new RuntimeException("Not enough fuel");
+        }
         List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> futurCoordList = new ArrayList<>();
         for(Coord c : coordList){
@@ -95,9 +99,9 @@ public class VehicleService {
         return vehicleRestClientService.getDistanceBetweenCoords(coord1, coord2);
     }
 
-    public double getDistanceRealizable(VehicleDto vehicleDto) {
-        double fuelLevel = this.getFuelLevel(vehicleDto);
-        VehicleType vehicleType = vehicleDto.getType();
+    public double getDistanceRealizable(Vehicle vehicle) {
+        double fuelLevel = this.getFuelLevel(vehicle);
+        VehicleType vehicleType = vehicle.getType();
         double fuelConsumption = vehicleType.getFuelConsumption();
         return fuelLevel/(fuelConsumption/100000);
     }
@@ -107,8 +111,7 @@ public class VehicleService {
         FacilityDto facilityDto = facilityRestClientService.getFacilityDtoById(facilityDtoId);
         double distancePosFire = this.getDistance( new Coord(vehicleDto.getLon(), vehicleDto.getLat()), new Coord(fireDto.getLon(), fireDto.getLat()));
         double distanceFireFacility = this.getDistance( new Coord(fireDto.getLon(), fireDto.getLat()), new Coord(facilityDto.getLon(), facilityDto.getLat()));
-
-        return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(vehicleDto);
+        return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(new Vehicle(vehicleDto));
     }
 
     public void checkAllVehicles(){
@@ -118,7 +121,7 @@ public class VehicleService {
             if(vehicleDto.getLiquidQuantity() < 1){
                 this.backToFacility(vehicleDto,facilityDto);
             }
-            if(vehicleDto.getFuel() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
+            if(vehicleDto.getLiquidQuantity() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
                 this.findFire(vehicleDto);
             }
         }
@@ -153,5 +156,9 @@ public class VehicleService {
             vehicleRestClientService.updateVehicle(id,vehicleDto);
         }
     }
-
+    public boolean hasEnoughFuel(Vehicle vehicle, Coord coord) {
+        FacilityDto facility = facilityRestClientService.getFacility(vehicle.getFacilityRefID());
+        float distance = mapRestClientService.getDistance(vehicle,coord,new Coord(facility.getLon(),facility.getLat()));
+        return distance < getDistanceRealizable(vehicle) + 3;
+    }
 }
