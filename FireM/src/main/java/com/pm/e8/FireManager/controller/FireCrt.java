@@ -2,7 +2,6 @@ package com.pm.e8.FireManager.controller;
 
 import com.pm.e8.FireManager.model.Fire;
 import com.project.model.dto.Coord;
-import com.project.model.dto.FireDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.pm.e8.FireManager.service.FireService;
@@ -19,8 +18,8 @@ public class FireCrt {
     }
 
     @GetMapping("/fires")
-    public List<FireDto> getFires() {
-        return fServ.getFireDtoList();
+    public List<Fire> getFires() {
+        return fServ.getFireList();
     }
     @GetMapping("/fires/{idf}")
     public Fire getFireById(@PathVariable int idf){

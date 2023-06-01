@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Intervention" />
         <module name="FleetManager" />
         <module name="FireManager" />
         <module name="projet_majeur" />
         <module name="ProxyServer" />
+        <module name="FacilityManager" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,10 +21,12 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="FacilityManager" options="-parameters" />
       <module name="FireManager" options="-parameters" />
       <module name="FireManager (1)" options="-parameters" />
       <module name="FireManager (2)" options="-parameters" />
       <module name="FleetManager" options="-parameters" />
+      <module name="Intervention" options="-parameters" />
       <module name="ProxyServer" options="-parameters" />
       <module name="projet_majeur" options="-parameters" />
     </option>

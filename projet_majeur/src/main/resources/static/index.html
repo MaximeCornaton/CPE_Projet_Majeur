@@ -21,6 +21,7 @@
     <!-- Custom scripts for this pages-->
     <script type="text/javascript" src="../js/back-manager.js" defer></script>
     <script type="text/javascript" src="../js/map-manager.js" defer></script>
+    <script type="text/javascript" src="../js/table-manager.js" defer></script>
 
 
 </head>
@@ -49,15 +50,30 @@
                 <h1 class="h3 mb-4 text-gray-800">Tableau de Bord</h1>
 
                 <!-- Map Card -->
-                <div class="card shadow mb-4" onclick="location.href='map.html';" style="cursor: pointer">
+                <div class="card shadow mb-4" onclick="location.href='map.html';" style="cursor: pointer; ">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Carte de la Ville</h6>
                     </div>
-                    <div class="card-body" style="height: 50vh">
-                        <div id="map" style="height: 100%; width: 100%"></div>
+                    <div class="card-body" style="height: 50vh;">
+                        <div id="map" style="height: 100%;"></div>
                         <a href="/map.html"> Voir plus. </a>
                     </div>
                 </div>
+
+                <!-- fleet table -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary" onclick="location.href='fleet.html';" style="cursor: pointer">Tableau de la Flotte</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
 
 
             </div>

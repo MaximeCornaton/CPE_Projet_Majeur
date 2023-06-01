@@ -9,6 +9,11 @@
     <remote-repository>
       <option name="id" value="gitlab-maven" />
       <option name="name" value="gitlab-maven" />
+      <option name="url" value="https://gitlab.com/api/v4/projects/14890148/packages/maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="gitlab-maven" />
+      <option name="name" value="gitlab-maven" />
       <option name="url" value="https://gitlab.com/api/v4/projects/26319036/packages/maven" />
     </remote-repository>
     <remote-repository>
