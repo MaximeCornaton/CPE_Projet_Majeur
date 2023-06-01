@@ -8,4 +8,4 @@ additional.properties
 **/application.properties
 
 # Fichier .class
-*.class
+**.class
