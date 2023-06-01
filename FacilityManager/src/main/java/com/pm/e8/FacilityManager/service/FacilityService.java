@@ -18,7 +18,7 @@ public class FacilityService {
     }
 
     public ArrayList<Facility> getFacilityTeam() {
-        return Lists.newArrayList((Facility) fRepo.findByTeamUuid("4c848170-4287-4c5f-9e1b-3d16ae2d4470"));
+        return Lists.newArrayList((Facility) fRepo.findByName("Caserne Tout feu tout flamme"));
 
     }
 
