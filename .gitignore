@@ -5,8 +5,8 @@
 additional.properties
 
 # Ignore les fichiers application.properties
-*.properties
+**/*.properties
 
 # Fichier .class
-*.class
+**/*.class
 
