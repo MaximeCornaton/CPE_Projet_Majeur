@@ -23,8 +23,8 @@ const icon_fire = L.icon({
 
 const icon_fire_station = L.icon({
     iconUrl: '../img/icons/fire-station.png',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
+    iconSize: [46, 46],
+    iconAnchor: [23, 23],
 });
 
 //fonction qui cree la carte
@@ -112,13 +112,16 @@ function displayVehicles(map) {
             if (vehicle.id in vehicleMarkers) {
                 const marker = vehicleMarkers[vehicle.id];
 
-                //Si la position du vehicule est differente de se pasotion precedente
-                if (marker.getLatLng().lat != vehicle.lat || marker.getLatLng().lng != vehicle.lon) {
-                    marker.setIcon(icon_fire_truck_moving);
-                }else {
+                //Si la position du vehicule est differente de sa position precedente
+                if (marker.getLatLng().lat !== vehicle.lat || marker.getLatLng().lng !== vehicle.lon) {
                     marker.setLatLng([vehicle.lat, vehicle.lon]);
+                    //TODO: Ajouter une animation de déplacement du véhicule
+                    //TODO: Ajouter une animation de rotation du véhicule pour respecter le sens de déplacement
+                    marker.setIcon(icon_fire_truck_moving);
+                } else {
                     marker.setIcon(icon_fire_truck);
                 }
+
             } else {
                 const marker = L.marker([vehicle.lat, vehicle.lon], { icon: icon_fire_truck }).addTo(map);
 
