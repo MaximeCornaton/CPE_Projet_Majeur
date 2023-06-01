@@ -8,6 +8,8 @@
         <option value="$PROJECT_DIR$/FireM/pom.xml" />
         <option value="$PROJECT_DIR$/FleetM/pom.xml" />
         <option value="$PROJECT_DIR$/proxy_server/pom.xml" />
+        <option value="$PROJECT_DIR$/FacilityManager/pom.xml" />
+        <option value="$PROJECT_DIR$/Intervention/pom.xml" />
       </list>
     </option>
   </component>
