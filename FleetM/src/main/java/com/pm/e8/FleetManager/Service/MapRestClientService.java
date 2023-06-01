@@ -33,7 +33,6 @@ public class MapRestClientService {
         ).toUriString();
 
         String jsonResponse = restTemplate.getForObject(url, String.class);
-        System.out.println(jsonResponse);
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
 
@@ -69,7 +68,6 @@ public class MapRestClientService {
         ).toUriString();
 
         String jsonResponse = restTemplate.getForObject(url, String.class);
-        System.out.println(jsonResponse);
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
 

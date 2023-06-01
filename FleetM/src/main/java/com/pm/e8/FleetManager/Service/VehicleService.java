@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class VehicleService {
@@ -54,9 +55,9 @@ public class VehicleService {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
             Coordonnees coord = cRepo.findTopByVehicleIdOrderByIdAsc(vehicle.getId()).orElseThrow();
-            vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat()));
+            Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
             cRepo.delete(coord);
-            System.out.println(vRepo.save(vehicle));
+            System.out.println(vRepo.save(newVehicle));
         }
     }
 
