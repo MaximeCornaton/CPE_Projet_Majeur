@@ -61,4 +61,9 @@ public class VehicleCrt {
         return vehicleService.getPumpers();
     }
 
+    @PostMapping("/vehicles/{vehicleId}/return")
+    public void returnVehicle(@PathVariable int vehicleId){
+        vehicleService.returnVehicle(vehicleId);
+    }
+
 }
