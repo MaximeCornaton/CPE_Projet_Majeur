@@ -479,7 +479,7 @@ function initMap() {
 
 setInterval(function() {
     displayData(map);
-}, 10);
+}, 100);
 
 setInterval(function() {
     refreshData();
