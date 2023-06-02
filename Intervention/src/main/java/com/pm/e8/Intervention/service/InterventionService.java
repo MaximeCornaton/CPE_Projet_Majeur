@@ -39,6 +39,7 @@ public class InterventionService {
         return mostEfficient;
     }
 
+    /*
     public void createInterventions(List<Integer> fireIds, List<Integer> vehicleIds) {
         int tailleMin = Math.min(fireIds.size(), vehicleIds.size());
         for (int i=0; i<tailleMin; i++) {
@@ -46,5 +47,5 @@ public class InterventionService {
             int fireId = fireIds.get(i);
             createIntervention(fireId, vehicleId);
         }
-    }
+    }*/
 }

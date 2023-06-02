@@ -21,11 +21,11 @@ public class InterventionCrt {
         interventionService.createIntervention(fireId,vehicleId);
     }
 
-
+/*
     @PostMapping("/interventions")
     public void createInterventions(@RequestParam List<Integer> fireIds, List<Integer> vehicleIds){
         for (int vehicleId : vehicleIds) {
             interventionService.createInterventions(fireIds,vehicleIds);
         }
-    }
+    }*/
 }
