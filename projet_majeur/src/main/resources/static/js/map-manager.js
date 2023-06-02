@@ -92,7 +92,7 @@ function displayFireStations(map) {
     // Ajouter ou mettre à jour les marqueurs des nouvelles stations
     for (const id in fireStations_) {
         if (fireStationExists(id)) {
-            const fireStation = fireStations_[id];
+                const fireStation = fireStations_[id];
             if (!fireStationIsDisplayed(id)) {
                 const marker = createMarker(fireStationsLayer, fireStation.lat, fireStation.lon, icon_fire_station);
 
@@ -125,8 +125,7 @@ function displayFireStations(map) {
                     <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
                     <strong>Garage:</strong><br>
                 `;
-
-                for(const id_vehicle in vehicles_) {
+                for(const id_vehicle of getFireStationVehicles(id)){
                     const vehicle = vehicles_[id_vehicle];
                     if(isVehicleInFireStationId(id_vehicle, id)) {
                         popupContent += `
@@ -134,7 +133,7 @@ function displayFireStations(map) {
                         `;
                     }else{
                         popupContent += `
-                            &#x25A0; <span style="color: red;font-size: smaller;">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType} <i class="fas fa-home" style="cursor: pointer" onclick="postReturnVehicle(vehicle.id)"></i> </span><br>
+                            &#x25A0; <span onclick="returnVehicleToFireStation('${vehicle.id}')" style="color: red;font-size: smaller;">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType} <i class="fas fa-home" style="cursor: pointer"></i></span><br>
                         `;
                     }
                 }
@@ -190,7 +189,7 @@ function getFireStationsPosition() {
     return positions;
 }
 
-//fonction qui retourne les véhicules d'une station de pompiers
+//fonction qui retourne les véhicules présents dans une station
 function getFireStationVehicles(id_station) {
     const vehicules = [];
     for (const id in vehicles_) {
@@ -223,6 +222,10 @@ function updateFireStationPopup(id, popupContent) {
     }
 }
 
+//fonction qui retourne les camions d'une station
+function getFireStationVehicles(id_station) {
+    return fireStations_[id_station].vehicleIdSet;
+}
 
 
 //fonction qui affiche les feux
@@ -335,7 +338,6 @@ function undisplayFire(id) {
     }
 }
 
-
 //fonction qui affiche les véhicules
 function displayVehicles(map) {
     // Ajouter ou mettre à jour les marqueurs des nouveaux véhicules
@@ -431,6 +433,18 @@ function isVehicleInFireStation(id_) {
 function isVehicleInFireStationId(id_vehicle, id) {
     const fireStationPositions = getFireStationsPosition();
     return fireStationPositions[id].lat.toFixed(2) === vehicles_[id_vehicle].lat.toFixed(2) && fireStationPositions[id].lon.toFixed(2) === vehicles_[id_vehicle].lon.toFixed(2);
+}
+
+//fonction qui fait rentrer un camion dans sa caserne
+function returnVehicleToFireStation(id) {
+    console.log(id);
+    if (isVehicleInFireStation(id)) {
+        console.log('Le camion est déjà dans sa caserne');
+        return;
+    }
+    postReturnToFireStation(id).then(() => {
+        console.log('Le camion est retourné à sa caserne');
+    });
 }
 
 //fonction qui affiche les feux et les vehicules sur la carte
