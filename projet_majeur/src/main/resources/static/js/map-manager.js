@@ -241,7 +241,7 @@ function displayFires(map) {
                 const popupContent = `
                     <strong>ID:</strong> ${fire.id}<br>
                     <strong>Type:</strong> ${fire.type}<br>
-                    <strong>Intensité:</strong> ${fire.intensity}<br>
+                    <strong>Intensit&#xE9;:</strong> ${fire.intensity}<br>
                     <strong>Surface:</strong> ${fire.range}<br>
                     <select id="option-${fire.id}" onchange="updateVehicleOptions(${fire.id})">
                         <option value="0">--Option</option>
