@@ -138,6 +138,7 @@ function displayFireStations(map) {
                     }
                 }
                 updateFireStationPopup(id, popupContent);
+
             }
         }
     }
@@ -170,7 +171,7 @@ function isFireStationEmpty(id_station) {
         const fireStation = fireStations_[id_station];
         for (const id in vehicles_) {
             const vehicle = vehicles_[id];
-            if (vehicle.lat.toFixed(2) === fireStation.lat.toFixed(2) && vehicle.lon.toFixed(2) === fireStation.lon.toFixed(2)) {
+            if (vehicle.lat.toFixed(3) === fireStation.lat.toFixed(3) && vehicle.lon.toFixed(3) === fireStation.lon.toFixed(3)) {
                 return false;
             }
         }
@@ -256,6 +257,7 @@ function displayFires(map) {
                 marker.bindPopup(popupContent);
 
                 firesMarkers_[id] = marker;
+
             }
         }
     }
@@ -268,14 +270,19 @@ function displayFires(map) {
     }
 }
 
+//uptade la popup d'un feu
+function uptadeFirePopup(id, popupContent) {
+    if (fireStationIsDisplayed(id)) {
+        updateMarkerPopup(fireStationsMarkers_[id], popupContent);
+    }
+}
+
 function updateVehicleOptions(fireId) {
     const optionSelected = document.getElementById(`option-${fireId}`).value;
     const selectVehicle = document.getElementById(`selectVehicle-${fireId}`);
 
     const fireType = fires_[fireId].type;
-
     selectVehicle.innerHTML = getVehicleOptions(fireType, optionSelected);
-
 }
 
 function getVehicleOptions(fire_type, option_selected) {
@@ -283,8 +290,9 @@ function getVehicleOptions(fire_type, option_selected) {
 
     for (const id in vehicles_) {
         if (vehicleExists(id)) {
+
             const vehicle = vehicles_[id];
-            if (option_selected == 1) {
+            if (option_selected === "1") {
                 if (vehicle.type === fire_type) {
                     options += `<option value="${vehicle.id}">${vehicle.type} - ${vehicle.id}</option>`;
                 }
@@ -354,10 +362,13 @@ function displayVehicles(map) {
                     <strong>Quantit&#xE9; de poudre:</strong> ${vehicle.liquidQuantity}<br>
                     <strong>Carburant:</strong> ${vehicle.fuel}<br>
                     <strong>Nombre de membres d'&#xE9;quipage:</strong> ${vehicle.crewMember}<br>
-                    
                 `;
 
                 marker.bindPopup(popupContent);
+
+                // marker.on('popupopen', function() {
+                //     updateVehicleOptions(id);
+                // });
 
                 vehiclesMarkers_[id] = marker;
 
@@ -422,7 +433,7 @@ function isVehicleMoving(id) {
 function isVehicleInFireStation(id_) {
     const fireStationPositions = getFireStationsPosition();
     for (const id in fireStationPositions) {
-        if (fireStationPositions[id].lat.toFixed(2) === vehicles_[id_].lat.toFixed(2) && fireStationPositions[id].lon.toFixed(2) === vehicles_[id_].lon.toFixed(2)) {
+        if (fireStationPositions[id].lat.toFixed(3) === vehicles_[id_].lat.toFixed(3) && fireStationPositions[id].lon.toFixed(3) === vehicles_[id_].lon.toFixed(3)) {
             return true;
         }
     }
