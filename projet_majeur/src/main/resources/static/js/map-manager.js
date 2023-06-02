@@ -114,11 +114,11 @@ function displayFireStations(map) {
                     <strong>Nom:</strong> ${fireStation.name}<br>
                     <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
                     <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
-                    <strong>V&#xE9;hicules:</strong><br>
-                    ${getFireStationVehicules().join('<br>')}
+                    <strong>V&#xE9;hicule.s dans le garage:</strong><br>
+                    ${getFireStationVehicles(id).join('<br>')}
                 `;
                 }
-                updateFireStationPopup(fireStationsMarkers_[id], popupContent);
+                updateFireStationPopup(id, popupContent);
             }
         }
     }
@@ -146,9 +146,16 @@ function fireStationExists(id) {
 }
 
 //fonction qui vérifie si une station de pompiers est vide
-//TODO
-function isFireStationEmpty(id) {
-    return true;
+function isFireStationEmpty(id_station) {
+    //si les coordonnées d'un camion de pompiers sont égales à celles de la caserne alors la caserne est pas vide
+        const fireStation = fireStations_[id_station];
+        for (const id in vehicles_) {
+            const vehicle = vehicles_[id];
+            if (vehicle.lat.toFixed(2) === fireStation.lat.toFixed(2) && vehicle.lon.toFixed(2) === fireStation.lon.toFixed(2)) {
+                return false;
+            }
+        }
+        return true;
 }
 
 //fonction qui retourne les positions des stations de pompiers
@@ -164,8 +171,16 @@ function getFireStationsPosition() {
 }
 
 //fonction qui retourne les véhicules d'une station de pompiers
-function getFireStationVehicules(id) {
-
+function getFireStationVehicles(id_station) {
+    const vehicules = [];
+    for (const id in vehicles_) {
+        const vehicle = vehicles_[id];
+        //console.log(fireStations_[id_station]);
+        if (vehicle.lat.toFixed(2) === fireStations_[id_station].lat.toFixed(2) && vehicle.lon.toFixed(2) === fireStations_[id_station].lon.toFixed(2)) {
+            vehicules.push(vehicle.id);
+        }
+    }
+    return vehicules;
 }
 
 //fonction qui verifie si un feu est affiché
@@ -386,11 +401,11 @@ function isVehicleMoving(id) {
 function isVehicleInFireStation(id_) {
     const fireStationPositions = getFireStationsPosition();
     for (const id in fireStationPositions) {
-        if (fireStationPositions[id].lat === vehicles_[id_].lat && fireStationPositions[id].lng === vehicles_[id_].lon) {
-            fireStations_[id].vehicles.push(vehicles_[id_]);
+        if (fireStationPositions[id].lat.toFixed(2) === vehicles_[id_].lat.toFixed(2) && fireStationPositions[id].lon.toFixed(2) === vehicles_[id_].lon.toFixed(2)) {
             return true;
         }
     }
+    return false;
 }
 
 //fonction qui affiche les feux et les vehicules sur la carte
