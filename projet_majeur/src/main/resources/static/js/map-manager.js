@@ -133,8 +133,9 @@ function displayFireStations(map) {
                         `;
                     }else{
                         popupContent += `
-                            &#x25A0; <span onclick="returnVehicleToFireStation('${vehicle.id}')" style="color: #ff0000;font-size: smaller;cursor: pointer">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType} <i class="fas fa-home"></i></span><br>
+    &#x25A0; <span style="color: #ff0000;font-size: smaller;cursor: pointer">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType}    </span><button onclick="returnVehicleToFireStation('${vehicle.id}');" class="btn-circle btn-sm"><i class="fas fa-home"></i></button><br>
                         `;
+
                     }
                 }
                 updateFireStationPopup(id, popupContent);
