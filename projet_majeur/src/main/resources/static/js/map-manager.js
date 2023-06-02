@@ -133,7 +133,7 @@ function displayFireStations(map) {
                         `;
                     }else{
                         popupContent += `
-                            &#x25A0; <span onclick="returnVehicleToFireStation('${vehicle.id}')" style="color: red;font-size: smaller;">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType} <i class="fas fa-home" style="cursor: pointer"></i></span><br>
+                            &#x25A0; <span onclick="returnVehicleToFireStation('${vehicle.id}')" style="color: #ff0000;font-size: smaller;cursor: pointer">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType} <i class="fas fa-home"></i></span><br>
                         `;
                     }
                 }
@@ -191,12 +191,12 @@ function getFireStationsPosition() {
 }
 
 //fonction qui retourne les véhicules présents dans une station
-function getFireStationVehicles(id_station) {
+function getVehiclesInFireStation(id_station) {
     const vehicules = [];
     for (const id in vehicles_) {
         const vehicle = vehicles_[id];
         //console.log(fireStations_[id_station]);
-        if (vehicle.lat.toFixed(2) === fireStations_[id_station].lat.toFixed(2) && vehicle.lon.toFixed(2) === fireStations_[id_station].lon.toFixed(2)) {
+        if (vehicle.lat.toFixed(3) === fireStations_[id_station].lat.toFixed(3) && vehicle.lon.toFixed(3) === fireStations_[id_station].lon.toFixed(3)) {
             vehicules.push(vehicle.id);
         }
     }
@@ -433,7 +433,7 @@ function isVehicleMoving(id) {
 function isVehicleInFireStation(id_) {
     const fireStationPositions = getFireStationsPosition();
     for (const id in fireStationPositions) {
-        if (fireStationPositions[id].lat.toFixed(3) === vehicles_[id_].lat.toFixed(3) && fireStationPositions[id].lon.toFixed(3) === vehicles_[id_].lon.toFixed(3)) {
+            if (fireStationPositions[id].lat.toFixed(3) === vehicles_[id_].lat.toFixed(3) && fireStationPositions[id].lon.toFixed(3) === vehicles_[id_].lon.toFixed(3)) {
             return true;
         }
     }
@@ -443,7 +443,7 @@ function isVehicleInFireStation(id_) {
 //fonction qui verifie si un camion est dans une caserne donnée
 function isVehicleInFireStationId(id_vehicle, id) {
     const fireStationPositions = getFireStationsPosition();
-    return fireStationPositions[id].lat.toFixed(2) === vehicles_[id_vehicle].lat.toFixed(2) && fireStationPositions[id].lon.toFixed(2) === vehicles_[id_vehicle].lon.toFixed(2);
+    return fireStationPositions[id].lat.toFixed(3) === vehicles_[id_vehicle].lat.toFixed(3) && fireStationPositions[id].lon.toFixed(3) === vehicles_[id_vehicle].lon.toFixed(3);
 }
 
 //fonction qui fait rentrer un camion dans sa caserne
