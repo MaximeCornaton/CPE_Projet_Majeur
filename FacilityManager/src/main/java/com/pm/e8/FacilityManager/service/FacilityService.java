@@ -48,29 +48,6 @@ public class FacilityService {
     }
 
 
-    private List<VehicleDto> getPumperList() {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "127.0.0.1:8000/fleet-service/vehicles/pumper";
-        ResponseEntity<List<VehicleDto>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<VehicleDto>>() {}
-        );
-        List<VehicleDto> PumperDtoList = response.getBody();
-
-        try {
-            if (PumperDtoList == null) {
-                throw new Exception("No camion found");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-        assert PumperDtoList != null;
-        return PumperDtoList;
-    }
-
     private List<FireDto> getFireList(){
         RestTemplate restTemplate = new RestTemplate();
         String url = "127.0.0.1:8000/fire-service/fires";
