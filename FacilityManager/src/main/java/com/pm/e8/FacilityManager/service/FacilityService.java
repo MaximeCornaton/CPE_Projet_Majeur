@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FacilityService {
@@ -18,8 +19,18 @@ public class FacilityService {
     }
 
     public ArrayList<Facility> getFacilityTeam() {
-        return Lists.newArrayList((Facility) fRepo.findByName("Caserne Tout feu tout flamme"));
+        ArrayList<Facility> FacilityList = new ArrayList<>();
+        Optional<Facility> f1 = fRepo.findById(38);
+        Optional<Facility> f2 = fRepo.findById(3935);
 
+        if (f1.isPresent()) {
+            FacilityList.add(f1.get());
+        }
+        if (f2.isPresent()) {
+            FacilityList.add(f2.get());
+        }
+
+        return FacilityList;
     }
 
     public List<Facility> getFacilityList() {
