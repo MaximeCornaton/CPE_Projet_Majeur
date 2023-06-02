@@ -1,8 +1,8 @@
 map = createMap('map');
 
-let vehicles_ = {};
-let fires_ = {};
-let fireStations_ = {};
+const vehicles_ = {};
+const fires_ = {};
+const fireStations_ = {};
 const vehiclesMarkers_ = {};
 const firesMarkers_ = {};
 const fireStationsMarkers_ = {};
@@ -118,7 +118,6 @@ function displayFireStations(map) {
 
 //fonction qui récupère les stations de pompiers
 function refreshFireStations() {
-    fireStations_ = {};
     getFireStation().then(fireStations => {
         fireStations.forEach(fireStation => {
             fireStations_[fireStation.id] = fireStation;
@@ -243,7 +242,6 @@ function sendVehicle(fireId, vehicleId) {
 
 //fonction qui récupère les feux
 function refreshFires() {
-    fires_ = {};
     getFires().then(fires => {
         fires.forEach(fire => {
             fires_[fire.id] = fire;
@@ -321,7 +319,6 @@ function displayVehicles(map) {
 
 //fonction qui récupère les camions
 function refreshVehicles() {
-    vehicles_ = {};
     getVehicles().then(vehicles => {
         vehicles.forEach(vehicle => {
             vehicles_[vehicle.id] = vehicle;
