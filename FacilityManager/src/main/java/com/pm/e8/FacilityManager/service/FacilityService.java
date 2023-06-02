@@ -18,8 +18,10 @@ public class FacilityService {
     }
 
     public ArrayList<Facility> getFacilityTeam() {
-        return Lists.newArrayList((Facility) fRepo.findByName("Caserne Tout feu tout flamme"));
 
+        ArrayList<Facility> FacilityList = Lists.newArrayList((Facility) fRepo.findByName("Caserne Tout feu tout flamme"));
+        FacilityList.add((Facility) fRepo.findByName("Caserne 2 Tout feu tout flamme"));
+        return FacilityList;
     }
 
     public List<Facility> getFacilityList() {
