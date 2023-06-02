@@ -64,6 +64,16 @@ function removeMarker(marker) {
     marker.remove();
 }
 
+//fonction qui cache un marqueur
+function hideMarker(marker) {
+    marker.setOpacity(0);
+}
+
+//fonction qui affiche un marqueur
+function showMarker(marker) {
+    marker.setOpacity(1);
+}
+
 
 //fonction qui affiche les stations de pompiers
 function displayFireStations(map) {
@@ -77,7 +87,8 @@ function displayFireStations(map) {
                 const popupContent = `
                     <strong>ID:</strong> ${fireStation.id}<br>
                     <strong>Nom:</strong> ${fireStation.name}<br>
-                    <strong>Capacit&#xE9;:</strong> ${fireStation.peopleCapacity}<br>
+                    <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
+                    <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
                 `;
 
                 marker.bindPopup(popupContent);
@@ -100,7 +111,7 @@ function displayFireStations(map) {
     // Supprimer les marqueurs des stations qui n'existent plus
     for (const id in fireStationsMarkers_) {
         if (!fireStationExists(id)) {
-            undisplayFireStation(id)
+            undisplayFireStation(id);
         }
     }
 }
@@ -117,6 +128,18 @@ function refreshFireStations() {
 //fonction qui vérifie si une station de pompiers existe
 function fireStationExists(id) {
     return fireStations_.hasOwnProperty(id);
+}
+
+//fonction qui retourne les positions des stations de pompiers
+function getFireStationsPosition() {
+    const positions = {};
+    for (const id in fireStations_) {
+        if (fireStationExists(id)) {
+            const fireStation = fireStations_[id];
+            positions[id] = { lat: fireStation.lat, lon: fireStation.lon };
+        }
+    }
+    return positions;
 }
 
 //fonction qui verifie si un feu est affiché
@@ -145,13 +168,17 @@ function displayFires(map) {
                 const popupContent = `
                     <strong>ID:</strong> ${fire.id}<br>
                     <strong>Type:</strong> ${fire.type}<br>
-                    <strong>Intensit&#xE9;:</strong> ${fire.intensity}<br>
+                    <strong>Intensité:</strong> ${fire.intensity}<br>
                     <strong>Surface:</strong> ${fire.range}<br>
-                    <select id="selectVehicle">
-                        <option value="0">--V&#xE9;hicule</option>
-                        ${getVehicleOptions()}
+                    <select id="option-${fire.id}" onchange="updateVehicleOptions(${fire.id})">
+                        <option value="0">--Option</option>
+                        <option value="1">Type</option>
                     </select>
-                    <button onclick="sendVehicle(${fire.id})">Envoyer</button>
+                    <select id="selectVehicle-${fire.id}">
+                        
+                        ${getVehicleOptions(fire.type, `option-${fire.id}`)}
+                    </select>
+                    <button onclick="sendVehicle(${fire.id}, document.getElementById('selectVehicle-${fire.id}').value)">Envoyer</button>
                 `;
 
                 marker.bindPopup(popupContent);
@@ -164,25 +191,49 @@ function displayFires(map) {
     // Supprimer les marqueurs des feux qui n'existent plus
     for (const id in firesMarkers_) {
         if (!fireExists(id)) {
-            undisplayFire(id)
+            undisplayFire(id);
         }
     }
 }
 
-function getVehicleOptions() {
-    let options = '';
+function updateVehicleOptions(fireId) {
+    const optionSelected = document.getElementById(`option-${fireId}`).value;
+    const selectVehicle = document.getElementById(`selectVehicle-${fireId}`);
+
+    const fireType = fires_[fireId].type;
+
+    selectVehicle.innerHTML = getVehicleOptions(fireType, optionSelected);
+
+}
+
+function getVehicleOptions(fire_type, option_selected) {
+    let options = '<option value="0">--V&#xE9;hicule</option>';
+
     for (const id in vehicles_) {
         if (vehicleExists(id)) {
             const vehicle = vehicles_[id];
-            options += `<option value="${vehicle.id}">${vehicle.type} - ${vehicle.id}</option>`;
+            if (option_selected == 1) {
+                console.log(vehicle.type, fire_type);
+                if (vehicle.type === fire_type) {
+                    options += `<option value="${vehicle.id}">${vehicle.type} - ${vehicle.id}</option>`;
+                }
+            } else {
+                options += `<option value="${vehicle.id}">${vehicle.type} - ${vehicle.id}</option>`;
+            }
         }
     }
     return options;
 }
 
+
+
 //fonction qui envoie un véhicule
-function sendVehicle(fireId) {
-    const vehicleId = document.getElementById('selectVehicle').value;
+function sendVehicle(fireId, vehicleId) {
+    console.log(fireId, vehicleId);
+    if(vehicleId == 0) {
+        console.log('Véhicule non sélectionné');
+        return;
+    }
     postIntervention(fireId, vehicleId).then(() => {
         console.log('Intervention envoyée');
     });
@@ -244,7 +295,13 @@ function displayVehicles(map) {
                 if (isVehicleMoving(id)) {
                     vehiclesMarkers_[id].setIcon(icon_fire_truck_moving);
                 }else{
-                    vehiclesMarkers_[id].setIcon(icon_fire_truck);
+                    //TODO: gerer le cas ou le camion est dans une caserne
+                    if(isVehicleInFireStation(id)){
+                        removeMarker(vehiclesMarkers_[id]);
+                    }else{
+
+                        vehiclesMarkers_[id].setIcon(icon_fire_truck);
+                    }
                 }
                 vehiclesMarkers_[id].setLatLng([vehicle.lat, vehicle.lon]);
             }
@@ -290,6 +347,16 @@ function undisplayVehicle(id) {
 //fonction qui vérifie si un camion est en mouvement
 function isVehicleMoving(id) {
     return vehiclesMarkers_[id].getLatLng().lat !== vehicles_[id].lat || vehiclesMarkers_[id].getLatLng().lng !== vehicles_[id].lon;
+}
+
+//fonction qui verifie si un camion est dans une caserne
+function isVehicleInFireStation(id_) {
+    const fireStationPositions = getFireStationsPosition();
+    for (const id in fireStationPositions) {
+        if (fireStationPositions[id].lat === vehicles_[id_].lat && fireStationPositions[id].lng === vehicles_[id_].lon) {
+            return true;
+        }
+    }
 }
 
 //fonction qui affiche les feux et les vehicules sur la carte
