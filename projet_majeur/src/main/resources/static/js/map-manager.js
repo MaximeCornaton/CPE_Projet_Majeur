@@ -59,19 +59,15 @@ function updateMarkerIcon(marker, icon) {
     marker.setIcon(icon);
 }
 
-//fonction qui suppime un marqueur
+//fonction qui supprime un marqueur
 function removeMarker(marker) {
     marker.remove();
 }
 
-//fonction qui cache un marqueur
-function hideMarker(marker) {
-    marker.setOpacity(0);
-}
 
-//fonction qui affiche un marqueur
-function showMarker(marker) {
-    marker.setOpacity(1);
+//fonction qui modifie la popup d'un marqueur
+function updateMarkerPopup(marker, popupContent) {
+    marker.setPopupContent(popupContent);
 }
 
 
@@ -95,15 +91,34 @@ function displayFireStations(map) {
 
                 // Événement d'affichage de la popup
                 marker.on('popupopen', () => {
-                    updateMarkerIcon(marker,icon_fire_station_moving);
+                    updateMarkerIcon(marker, icon_fire_station_moving);
                 });
 
                 // Événement de désaffichage de la popup
                 marker.on('popupclose', () => {
-                    updateMarkerIcon(marker,icon_fire_station);
+                    updateMarkerIcon(marker, icon_fire_station);
                 });
 
                 fireStationsMarkers_[id] = marker;
+            } else {
+                if (isFireStationEmpty(id)) {
+                    popupContent = `
+                    <strong>ID:</strong> ${fireStation.id}<br>
+                    <strong>Nom:</strong> ${fireStation.name}<br>
+                    <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
+                    <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
+                `;
+                } else {
+                    popupContent = `
+                    <strong>ID:</strong> ${fireStation.id}<br>
+                    <strong>Nom:</strong> ${fireStation.name}<br>
+                    <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
+                    <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
+                    <strong>V&#xE9;hicules:</strong><br>
+                    ${getFireStationVehicules().join('<br>')}
+                `;
+                }
+                updateFireStationPopup(fireStationsMarkers_[id], popupContent);
             }
         }
     }
@@ -130,6 +145,12 @@ function fireStationExists(id) {
     return fireStations_.hasOwnProperty(id);
 }
 
+//fonction qui vérifie si une station de pompiers est vide
+//TODO
+function isFireStationEmpty(id) {
+    return true;
+}
+
 //fonction qui retourne les positions des stations de pompiers
 function getFireStationsPosition() {
     const positions = {};
@@ -140,6 +161,11 @@ function getFireStationsPosition() {
         }
     }
     return positions;
+}
+
+//fonction qui retourne les véhicules d'une station de pompiers
+function getFireStationVehicules(id) {
+
 }
 
 //fonction qui verifie si un feu est affiché
@@ -154,6 +180,14 @@ function undisplayFireStation(id) {
         delete fireStationsMarkers_[id];
     }
 }
+
+//fonction qui modifie la popup d'une station de pompiers
+function updateFireStationPopup(id, popupContent) {
+    if (fireStationIsDisplayed(id)) {
+        updateMarkerPopup(fireStationsMarkers_[id], popupContent);
+    }
+}
+
 
 
 //fonction qui affiche les feux
@@ -299,7 +333,6 @@ function displayVehicles(map) {
                     if(isVehicleInFireStation(id)){
                         removeMarker(vehiclesMarkers_[id]);
                     }else{
-
                         vehiclesMarkers_[id].setIcon(icon_fire_truck);
                     }
                 }
@@ -354,6 +387,7 @@ function isVehicleInFireStation(id_) {
     const fireStationPositions = getFireStationsPosition();
     for (const id in fireStationPositions) {
         if (fireStationPositions[id].lat === vehicles_[id_].lat && fireStationPositions[id].lng === vehicles_[id_].lon) {
+            fireStations_[id].vehicles.push(vehicles_[id_]);
             return true;
         }
     }
