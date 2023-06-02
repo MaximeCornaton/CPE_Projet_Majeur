@@ -29,10 +29,6 @@ public class FacilityCrt {
         return fServ.getFacilityList();
     }
 
-    @GetMapping("/pumper")
-    public void autoPumper(){
-        fServ.PumperAuto();
-    }
 
 
 }

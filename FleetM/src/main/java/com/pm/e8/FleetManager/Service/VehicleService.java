@@ -121,8 +121,9 @@ public class VehicleService {
 
     public void checkAllVehicles(){
         List<VehicleDto> vehicleDtoList = vehicleRestClientService.getTeamVehicles();
-        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
+
         for(VehicleDto vehicleDto : vehicleDtoList){
+            FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
             if(vehicleDto.getLiquidQuantity() < 1){
                 this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
                 this.backToFacility(vehicleDto,facilityDto);
