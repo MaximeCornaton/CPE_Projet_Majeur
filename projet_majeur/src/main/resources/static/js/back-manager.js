@@ -45,3 +45,13 @@ function postIntervention(fireId, vehicleId) {
         },
     })
 }
+
+//fonction pour ramener un camion a une caserne
+function postReturnVehicle(vehicleId) {
+    return fetch(`http://localhost:8000/fleet-service/vehicles/${vehicleId}/return`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+}
