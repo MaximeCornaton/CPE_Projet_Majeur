@@ -1,7 +1,10 @@
 map = createMap('map');
-let vehicleMarkers = {};
-let fireMarkers = {};
-let fireStationMarkers = {};
+let vehicles_ = {};
+let fires_ = {};
+let fireStations_ = {};
+let vehiclesMarkers_ = {};
+let firesMarkers_ = {};
+let fireStationsMarkers_ = {};
 
 const icon_fire_truck = L.icon({
     iconUrl: '../img/icons/fire-truck.png',
@@ -11,8 +14,8 @@ const icon_fire_truck = L.icon({
 
 const icon_fire_truck_moving = L.icon({
     iconUrl: '../img/icons/fire-truck.gif',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
 });
 
 const icon_fire = L.icon({
@@ -27,6 +30,12 @@ const icon_fire_station = L.icon({
     iconAnchor: [23, 23],
 });
 
+const icon_fire_station_moving = L.icon({
+    iconUrl: '../img/icons/fire-station.gif',
+    iconSize: [62, 62],
+    iconAnchor: [31, 31],
+})
+
 //fonction qui cree la carte
 function createMap(divId) {
     let map = L.map(divId).setView([45.7735, 4.8745], 13);
@@ -39,167 +48,175 @@ function createMap(divId) {
     return map;
 }
 
-//foction qui affiche la caserne
-function displayFireStation(map) {
-    getFireStation().then(fireStation => {
+//fonction qui affiche les stations de pompiers
+function displayFireStations(map) {
+    // Ajouter ou mettre à jour les marqueurs des nouvelles stations
+    for (const id in fireStations_) {
+        if (fireStationExists(id)) {
+            const fireStation = fireStations_[id];
+            if (!fireStationIsDisplayed(id)) {
+                const marker = L.marker([fireStation.lat, fireStation.lon], { icon: icon_fire_station }).addTo(map);
 
-        // Supprimer les stations qui n'existent plus
-        for (const id in fireStationMarkers) {
-            if (!fireStation.some(fireStation => fireStation.id === id)) {
-                removeFireStation(map, id);
+                const popupContent = `
+                    <strong>ID:</strong> ${fireStation.id}<br>
+                    <strong>Nom:</strong> ${fireStation.name}<br>
+                    <strong>Capacit&#xE9;:</strong> ${fireStation.peopleCapacity}<br>
+                `;
+
+                marker.bindPopup(popupContent);
+
+                // Événement d'affichage de la popup
+                marker.on('popupopen', () => {
+                    marker.setIcon(icon_fire_station_moving);
+                });
+
+                // Événement de désaffichage de la popup
+                marker.on('popupclose', () => {
+                    marker.setIcon(icon_fire_station);
+                });
+
+                fireStationsMarkers_[id] = marker;
             }
         }
+    }
+}
 
-        fireStation.forEach(fireStation => {
-
-        const marker = L.marker([fireStation.lat, fireStation.lon], { icon: icon_fire_station }).addTo(map);
-
-        const popupContent = `
-            <strong>ID:</strong> ${fireStation.id}<br>
-            <strong>Nom:</strong> ${fireStation.name}<br>
-            <strong>Capacité:</strong> ${fireStation.peopleCapacity}<br>
-        `;
-
-        marker.bindPopup(popupContent);
-        fireStationMarkers[fireStation.id] = marker;
+//fonction qui récupère les stations de pompiers
+function refreshFireStations() {
+    getFireStation().then(fireStations => {
+        fireStations.forEach(fireStation => {
+            fireStations_[fireStation.id] = fireStation;
+        });
     });
-    });
+}
+
+//fonction qui vérifie si une station de pompiers existe
+function fireStationExists(id) {
+    return fireStations_.hasOwnProperty(id);
+}
+
+//fonction qui verifie si un feu est affiché
+function fireStationIsDisplayed(id) {
+    return fireStationsMarkers_.hasOwnProperty(id);
 }
 
 
 //fonction qui affiche les feux
 function displayFires(map) {
-    getFires().then(fires => {
-        // Supprimer les feux qui n'existent plus
-        for (const id in fireMarkers) {
-            if (!fires.some(fire => fire.id === id)) {
-                removeFire(map, id);
-            }
-        }
-
-        // Ajouter ou mettre à jour les marqueurs des nouveaux feux
-        fires.forEach(fire => {
-
-            if (fire.id in fireMarkers) {
-                // Le feu existe déjà, aucune mise à jour nécessaire
-                return;
-            }
-
-            const marker = L.marker([fire.lat, fire.lon], { icon: icon_fire }).addTo(map);
-
-            const popupContent = `
-                <strong>ID:</strong> ${fire.id}<br>
-            `;
-
-            marker.bindPopup(popupContent);
-
-            fireMarkers[fire.id] = marker;
-        });
-    });
-}
-
-//fonction qui affiche les vehicules
-function displayVehicles(map) {
-    getVehicles().then(vehicles => {
-        // Supprimer les véhicules qui n'existent plus
-        for (const id in vehicleMarkers) {
-            if (!vehicles.some(vehicle => vehicle.id === id)) {
-                removeVehicle(map, id);
-            }
-        }
-
-        vehicles.forEach(vehicle => {
-            if (vehicle.id in vehicleMarkers) {
-                const marker = vehicleMarkers[vehicle.id];
-
-                //Si la position du vehicule est differente de sa position precedente
-                if (marker.getLatLng().lat !== vehicle.lat || marker.getLatLng().lng !== vehicle.lon) {
-                    marker.setLatLng([vehicle.lat, vehicle.lon]);
-                    //TODO: Ajouter une animation de déplacement du véhicule
-                    //TODO: Ajouter une animation de rotation du véhicule pour respecter le sens de déplacement
-                    marker.setIcon(icon_fire_truck_moving);
-                } else {
-                    marker.setIcon(icon_fire_truck);
-                }
-
-            } else {
-                const marker = L.marker([vehicle.lat, vehicle.lon], { icon: icon_fire_truck }).addTo(map);
+    // Ajouter ou mettre à jour les marqueurs des nouveaux feux
+    for (const id in fires_) {
+        if (fireExists(id)) {
+            const fire = fires_[id];
+            if (!fireIsDisplayed(id)) {
+                const marker = L.marker([fire.lat, fire.lon], { icon: icon_fire }).addTo(map);
 
                 const popupContent = `
-                    <strong>ID:</strong> ${vehicle.id}<br>
-                    <strong>Type:</strong> ${vehicle.type}<br>
-                    <strong>Type de Liquide:</strong> ${vehicle.liquidType}<br>
-                    <strong>Quantit&#xE9 de Liquide:</strong> ${vehicle.liquidQuantity}<br>
-                    <strong>Essence:</strong> ${vehicle.fuel}<br>
+                    <strong>ID:</strong> ${fire.id}<br>
+   
                 `;
 
                 marker.bindPopup(popupContent);
 
-                vehicleMarkers[vehicle.id] = marker;
+                firesMarkers_[id] = marker;
             }
+        }
+    }
+}
+
+//fonction qui récupère les feux
+function refreshFires() {
+    getFires().then(fires => {
+        fires.forEach(fire => {
+            fires_[fire.id] = fire;
         });
     });
 }
 
-//fonction qui desaffiche les feux de la carte
-function removeFires(map) {
-    for (const id in fireMarkers) {
-        const marker = fireMarkers[id];
-        map.removeLayer(marker);
-        delete fireMarkers[id];
+//fonction qui vérifie si un feu existe
+function fireExists(id) {
+    return fires_.hasOwnProperty(id);
+}
+
+//fonction qui vérifie si un feu est affiché
+function fireIsDisplayed(id) {
+    return firesMarkers_.hasOwnProperty(id);
+}
+
+
+//fonction qui affiche les véhicules
+function displayVehicles(map) {
+    // Ajouter ou mettre à jour les marqueurs des nouveaux véhicules
+    for (const id in vehicles_) {
+        if (vehicleExists(id)) {
+            const vehicle = vehicles_[id];
+            if (!vehicleIsDisplayed(id)) {
+                const marker = L.marker([vehicle.lat, vehicle.lon], { icon: icon_fire_truck }).addTo(map);
+
+                const popupContent = `
+                    <strong>ID:</strong> ${vehicle.id}<br>
+                    
+                `;
+
+                marker.bindPopup(popupContent);
+
+                vehiclesMarkers_[id] = marker;
+
+            } else {
+                if (isVehicleMoving(id)) {
+                    vehiclesMarkers_[id].setIcon(icon_fire_truck_moving);
+                }else{
+                    vehiclesMarkers_[id].setIcon(icon_fire_truck);
+                }
+                vehiclesMarkers_[id].setLatLng([vehicle.lat, vehicle.lon]);
+            }
+        }
     }
 }
 
-//fonction qui desaffiche un feu de la carte
-function removeFire(map, id) {
-    const marker = fireMarkers[id];
-    map.removeLayer(marker);
-    delete fireMarkers[id];
+
+//fonction qui récupère les camions
+function refreshVehicles() {
+    getVehicles().then(vehicles => {
+        vehicles.forEach(vehicle => {
+            vehicles_[vehicle.id] = vehicle;
+        });
+    });
 }
 
-//fonction qui desaffiche les vehicules de la carte
-function removeVehicles(map) {
-    for (const id in vehicleMarkers) {
-        const marker = vehicleMarkers[id];
-        map.removeLayer(marker);
-        delete vehicleMarkers[id];
-    }
+//fonction qui vérifie si un camion existe
+function vehicleExists(id) {
+    return vehicles_.hasOwnProperty(id);
 }
 
-//fonction qui desaffiche un vehicule de la carte
-function removeVehicle(map, id) {
-    const marker = vehicleMarkers[id];
-    map.removeLayer(marker);
-    delete vehicleMarkers[id];
+//fonction qui vérifie si un camion est affiché
+function vehicleIsDisplayed(id) {
+    return vehiclesMarkers_.hasOwnProperty(id);
 }
 
-//fonction qui desaffiche la caserne de la carte
-function removeFireStations(map) {
-    for (const id in fireStationMarkers) {
-        const marker = fireStationMarkers[id];
-        map.removeLayer(marker);
-        delete fireStationMarkers[id];
-    }
-}
-
-//fonction qui desaffiche une caserne de la carte
-function removeFireStation(map, id) {
-    const marker = fireStationMarkers[id];
-    map.removeLayer(marker);
-    delete fireStationMarkers[id];
+//fonction qui vérifie si un camion est en mouvement
+function isVehicleMoving(id) {
+    return vehiclesMarkers_[id].getLatLng().lat !== vehicles_[id].lat || vehiclesMarkers_[id].getLatLng().lng !== vehicles_[id].lon;
 }
 
 //fonction qui affiche les feux et les vehicules sur la carte
 function displayData(map) {
-    displayFires(map);
+    //displayFires(map);
     displayVehicles(map);
+    displayFireStations(map)
 }
 
-displayData(map);
-displayFireStation(map);
+//fonction qui recuperes les feux et vehicules
+function refreshData() {
+    refreshFires();
+    refreshVehicles();
+    refreshFireStations();
+}
 
 setInterval(function() {
     displayData(map);
-}, 1000);
+}, 100);
 
+setInterval(function() {
+    refreshData();
+}, 1000);
 
