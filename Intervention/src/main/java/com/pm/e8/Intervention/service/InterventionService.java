@@ -6,6 +6,8 @@ import com.project.model.dto.FireType;
 import com.project.model.dto.LiquidType;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InterventionService {
 
@@ -35,5 +37,14 @@ public class InterventionService {
             }
         }
         return mostEfficient;
+    }
+
+    public void createInterventions(List<Integer> fireIds, List<Integer> vehicleIds) {
+        int tailleMin = Math.min(fireIds.size(), vehicleIds.size());
+        for (int i=0; i<tailleMin; i++) {
+            int vehicleId = vehicleIds.get(i);
+            int fireId = fireIds.get(i);
+            createIntervention(fireId, vehicleId);
+        }
     }
 }
