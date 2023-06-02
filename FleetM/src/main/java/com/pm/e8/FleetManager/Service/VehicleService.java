@@ -92,6 +92,11 @@ public class VehicleService {
             tempCoord.setVehicle(vehicle);
             futurCoordList.add(tempCoord);
         }
+
+        Coordonnees lastCoord = new Coordonnees(coord.getLon(),coord.getLat());
+        lastCoord.setVehicle(vehicle);
+        futurCoordList.add(lastCoord);
+
         vehicle.setCoordonnees(futurCoordList);
         vRepo.save(vehicle);
     }
