@@ -168,4 +168,13 @@ public class VehicleService {
         float distance = mapRestClientService.getDistance(vehicle,coord,new Coord(facility.getLon(),facility.getLat()));
         return distance < getDistanceRealizable(vehicle) + 3;
     }
+
+
+    public void returnVehicle(int vehicleId) {
+        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(vehicleId);
+        FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
+        Coord coord = new Coord(facilityDto.getLon(), facilityDto.getLat());
+        startMoving(vehicleDto.getId(), coord);
+
+    }
 }

@@ -1,4 +1,7 @@
 map = createMap('map');
+const firesLayer = L.layerGroup().addTo(map);
+const vehiclesLayer = L.layerGroup().addTo(map);
+const fireStationsLayer = L.layerGroup().addTo(map);
 
 const vehicles_ = {};
 const fires_ = {};
@@ -50,8 +53,8 @@ function createMap(divId) {
 }
 
 //fonction qui créer les marqueurs
-function createMarker(map, lat, lon, icon) {
-    return L.marker([lat, lon], { icon: icon }).addTo(map);
+function createMarker(layer, lat, lon, icon) {
+    return L.marker([lat, lon], { icon: icon }).addTo(layer);
 }
 
 //fonction qui modifie l'icon du marqueur
@@ -88,7 +91,7 @@ function displayFireStations(map) {
         if (fireStationExists(id)) {
             const fireStation = fireStations_[id];
             if (!fireStationIsDisplayed(id)) {
-                const marker = createMarker(map, fireStation.lat, fireStation.lon, icon_fire_station);
+                const marker = createMarker(fireStationsLayer, fireStation.lat, fireStation.lon, icon_fire_station);
 
                 const popupContent = `
                     <strong>ID:</strong> ${fireStation.id}<br>
@@ -222,7 +225,7 @@ function displayFires(map) {
         if (fireExists(id)) {
             const fire = fires_[id];
             if (!fireIsDisplayed(id)) {
-                const marker = createMarker(map, fire.lat, fire.lon, icon_fire);
+                const marker = createMarker(firesLayer, fire.lat, fire.lon, icon_fire);
 
                 const popupContent = `
                     <strong>ID:</strong> ${fire.id}<br>
@@ -333,7 +336,7 @@ function displayVehicles(map) {
         if (vehicleExists(id)) {
             const vehicle = vehicles_[id];
             if (!vehicleIsDisplayed(id)) {
-                const marker = createMarker(map, vehicle.lat, vehicle.lon, icon_fire_truck);
+                const marker = createMarker(vehiclesLayer, vehicle.lat, vehicle.lon, icon_fire_truck);
 
                 const popupContent = `
                     <strong>ID:</strong> ${vehicle.id}<br>
