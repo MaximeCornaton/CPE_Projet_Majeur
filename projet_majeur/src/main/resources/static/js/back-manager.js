@@ -36,3 +36,12 @@ function getFireStation() {
             console.error('Une erreur s\'est produite:', error);
         });
 }
+
+function postIntervention(fireId, vehicleId) {
+    return fetch(`http://localhost:8000/inter-service/intervention?fireId=${fireId}&vehicleId=${vehicleId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+}

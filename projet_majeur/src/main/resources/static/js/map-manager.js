@@ -147,6 +147,11 @@ function displayFires(map) {
                     <strong>Type:</strong> ${fire.type}<br>
                     <strong>Intensit&#xE9;:</strong> ${fire.intensity}<br>
                     <strong>Surface:</strong> ${fire.range}<br>
+                    <select id="selectVehicle">
+                        <option value="0">--V&#xE9;hicule</option>
+                        ${getVehicleOptions()}
+                    </select>
+                    <button onclick="sendVehicle(${fire.id})">Envoyer</button>
                 `;
 
                 marker.bindPopup(popupContent);
@@ -163,6 +168,26 @@ function displayFires(map) {
         }
     }
 }
+
+function getVehicleOptions() {
+    let options = '';
+    for (const id in vehicles_) {
+        if (vehicleExists(id)) {
+            const vehicle = vehicles_[id];
+            options += `<option value="${vehicle.id}">${vehicle.type} - ${vehicle.id}</option>`;
+        }
+    }
+    return options;
+}
+
+//fonction qui envoie un véhicule
+function sendVehicle(fireId) {
+    const vehicleId = document.getElementById('selectVehicle').value;
+    postIntervention(fireId, vehicleId).then(() => {
+        console.log('Intervention envoyée');
+    });
+}
+
 
 //fonction qui récupère les feux
 function refreshFires() {
@@ -208,6 +233,7 @@ function displayVehicles(map) {
                     <strong>Quantit&#xE9; de poudre:</strong> ${vehicle.liquidQuantity}<br>
                     <strong>Carburant:</strong> ${vehicle.fuel}<br>
                     <strong>Nombre de membres d'&#xE9;quipage:</strong> ${vehicle.crewMember}<br>
+                    
                 `;
 
                 marker.bindPopup(popupContent);
