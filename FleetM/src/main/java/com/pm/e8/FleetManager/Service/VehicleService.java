@@ -124,7 +124,7 @@ public class VehicleService {
 
         for(VehicleDto vehicleDto : vehicleDtoList){
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
-            if(vehicleDto.getLiquidQuantity() < 1){
+            if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat()){
                 this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
                 this.backToFacility(vehicleDto,facilityDto);
             }
