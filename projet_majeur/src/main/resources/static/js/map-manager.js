@@ -2,6 +2,9 @@ map = createMap('map');
 const firesLayer = L.layerGroup().addTo(map);
 const vehiclesLayer = L.layerGroup().addTo(map);
 const fireStationsLayer = L.layerGroup().addTo(map);
+firesLayer.setZIndex(10);
+vehiclesLayer.setZIndex(20);
+fireStationsLayer.setZIndex(30);
 
 const vehicles_ = {};
 const fires_ = {};
@@ -98,6 +101,7 @@ function displayFireStations(map) {
                     <strong>Nom:</strong> ${fireStation.name}<br>
                     <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
                     <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
+                    <strong>Garage:</strong><br>
                 `;
 
                 marker.bindPopup(popupContent);
@@ -114,22 +118,25 @@ function displayFireStations(map) {
 
                 fireStationsMarkers_[id] = marker;
             } else {
-                if (isFireStationEmpty(id)) {
-                    popupContent = `
+                popupContent = `
                     <strong>ID:</strong> ${fireStation.id}<br>
                     <strong>Nom:</strong> ${fireStation.name}<br>
                     <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
                     <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
+                    <strong>Garage:</strong><br>
                 `;
-                } else {
-                    popupContent = `
-                    <strong>ID:</strong> ${fireStation.id}<br>
-                    <strong>Nom:</strong> ${fireStation.name}<br>
-                    <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
-                    <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
-                    <strong>V&#xE9;hicule.s dans le garage:</strong><br>
-                    ${getFireStationVehicles(id).map(vehicleId => `&#x25A0; ${vehicles_[vehicleId].type} - ${vehicles_[vehicleId].id} - ${vehicles_[vehicleId].liquidType}`).join('<br>')}
-                `;
+
+                for(const id_vehicle in vehicles_) {
+                    const vehicle = vehicles_[id_vehicle];
+                    if(isVehicleInFireStationId(id_vehicle, id)) {
+                        popupContent += `
+                            &#x25A0;  <span style="font-size: smaller;"> ${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType}  </span><br>
+                        `;
+                    }else{
+                        popupContent += `
+                            &#x25A0; <span style="color: red;font-size: smaller;">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType} <i class="fas fa-home" style="cursor: pointer" onclick="postReturnVehicle(vehicle.id)"></i> </span><br>
+                        `;
+                    }
                 }
                 updateFireStationPopup(id, popupContent);
             }
@@ -420,6 +427,12 @@ function isVehicleInFireStation(id_) {
     return false;
 }
 
+//fonction qui verifie si un camion est dans une caserne donnée
+function isVehicleInFireStationId(id_vehicle, id) {
+    const fireStationPositions = getFireStationsPosition();
+    return fireStationPositions[id].lat.toFixed(2) === vehicles_[id_vehicle].lat.toFixed(2) && fireStationPositions[id].lon.toFixed(2) === vehicles_[id_vehicle].lon.toFixed(2);
+}
+
 //fonction qui affiche les feux et les vehicules sur la carte
 function displayData(map) {
     displayFires(map);
@@ -441,7 +454,7 @@ function initMap() {
 
 setInterval(function() {
     displayData(map);
-}, 100);
+}, 10);
 
 setInterval(function() {
     refreshData();

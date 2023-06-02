@@ -54,4 +54,5 @@ function postReturnVehicle(vehicleId) {
             "Content-Type": "application/json"
         },
     })
+    console.log("camion retourne");
 }
