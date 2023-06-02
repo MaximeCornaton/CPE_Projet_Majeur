@@ -64,6 +64,16 @@ function removeMarker(marker) {
     marker.remove();
 }
 
+//fonction qui cache un marqueur
+function hideMarker(marker) {
+    marker.setOpacity(0);
+}
+
+//fonction qui affiche un marqueur
+function showMarker(marker) {
+    marker.setOpacity(1);
+}
+
 
 //fonction qui modifie la popup d'un marqueur
 function updateMarkerPopup(marker, popupContent) {
@@ -115,7 +125,7 @@ function displayFireStations(map) {
                     <strong>Nombre de personne:</strong> ${fireStation.peopleCapacity}<br>
                     <strong>Nombre de v&#xE9;hicule max.:</strong> ${fireStation.maxVehicleSpace}<br>
                     <strong>V&#xE9;hicule.s dans le garage:</strong><br>
-                    ${getFireStationVehicles(id).join('<br>')}
+                    ${getFireStationVehicles(id).map(vehicleId => `&#x25A0; ${vehicles_[vehicleId].type} - ${vehicles_[vehicleId].id} - ${vehicles_[vehicleId].liquidType}`).join('<br>')}
                 `;
                 }
                 updateFireStationPopup(id, popupContent);
@@ -262,7 +272,6 @@ function getVehicleOptions(fire_type, option_selected) {
         if (vehicleExists(id)) {
             const vehicle = vehicles_[id];
             if (option_selected == 1) {
-                console.log(vehicle.type, fire_type);
                 if (vehicle.type === fire_type) {
                     options += `<option value="${vehicle.id}">${vehicle.type} - ${vehicle.id}</option>`;
                 }
@@ -344,10 +353,10 @@ function displayVehicles(map) {
                 if (isVehicleMoving(id)) {
                     vehiclesMarkers_[id].setIcon(icon_fire_truck_moving);
                 }else{
-                    //TODO: gerer le cas ou le camion est dans une caserne
                     if(isVehicleInFireStation(id)){
-                        removeMarker(vehiclesMarkers_[id]);
+                        hideMarker(vehiclesMarkers_[id]);
                     }else{
+                        showMarker(vehiclesMarkers_[id]);
                         vehiclesMarkers_[id].setIcon(icon_fire_truck);
                     }
                 }
