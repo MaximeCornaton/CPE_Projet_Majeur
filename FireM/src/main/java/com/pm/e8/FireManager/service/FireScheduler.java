@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 @Component
@@ -21,6 +22,7 @@ public class FireScheduler {
 
     @Scheduled(fixedRate = 2000)
     public void UpdateBDD() {
+        fRepo.deleteAll();
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/fires";
         ResponseEntity<List<Fire>> response = restTemplate.exchange(
