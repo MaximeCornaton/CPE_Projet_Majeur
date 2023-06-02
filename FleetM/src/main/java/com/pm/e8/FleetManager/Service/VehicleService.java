@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +48,10 @@ public class VehicleService {
             System.out.println("Failed to move vehicle: " + (responseEntity != null ? responseEntity.getStatusCode() : "No response"));
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
         }
+    }
+
+    public List<Vehicle> getPumpers(){
+        return vRepo.findByType("PUMPER_TRUCK");
     }
 
     public void moveAllVehicles() {

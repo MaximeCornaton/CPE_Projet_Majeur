@@ -10,4 +10,6 @@ import java.util.List;
 public interface VehicleRepository extends CrudRepository<Vehicle,Integer> {
     List<Vehicle> findVehicleByFutureLonNotNullAndFutureLatNotNull();
     List<Vehicle> findByCoordonneesListIsNotEmpty();
+
+    List<Vehicle> findByType(String type);
 }

@@ -1,11 +1,9 @@
 package com.pm.e8.FleetManager.Controller;
 
 import com.pm.e8.FleetManager.Service.VehicleService;
+import com.pm.e8.FleetManager.model.Vehicle;
 import com.project.model.dto.Coord;
-import com.project.model.dto.FacilityDto;
-import com.project.model.dto.FireDto;
 import com.project.model.dto.VehicleDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +54,11 @@ public class VehicleCrt {
     @RequestMapping(value="/vehicle/{id}/enoughFuel", method= RequestMethod.GET)
     public boolean enoughFuel(@PathVariable int id, @RequestParam int fireDtoId, @RequestParam int facilityDtoId){
         return vehicleService.enoughFuel(vehicleService.getVehicleById(id), fireDtoId, facilityDtoId);
+    }
+
+    @GetMapping("/vehicles/pumper")
+    public List<Vehicle> getPumperVehicles(){
+        return vehicleService.getPumpers();
     }
 
 }
