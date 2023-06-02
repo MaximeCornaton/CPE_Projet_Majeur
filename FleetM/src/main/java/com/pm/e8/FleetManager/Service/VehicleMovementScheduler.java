@@ -16,7 +16,7 @@ public class VehicleMovementScheduler {
         vehicleService.moveAllVehicles();
     }
 
-    //@Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 5000)
     public void checkVehicles() {
         vehicleService.checkAllVehicles();
     }
