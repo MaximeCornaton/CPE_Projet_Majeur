@@ -453,15 +453,15 @@ function returnVehicleToFireStation(id) {
         console.log('Le camion est déjà dans sa caserne');
         return;
     }
-    postReturnToFireStation(id).then(() => {
+    postReturnVehicle(id).then(() => {
         console.log('Le camion est retourné à sa caserne');
     });
 }
 
 //fonction qui affiche les feux et les vehicules sur la carte
 function displayData(map) {
-    displayFires(map);
     displayVehicles(map);
+    displayFires(map)
     displayFireStations(map)
 }
 
