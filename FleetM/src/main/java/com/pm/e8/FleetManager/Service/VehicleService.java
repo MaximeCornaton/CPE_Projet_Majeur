@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class VehicleService {
@@ -24,6 +25,8 @@ public class VehicleService {
     private final FireRestClientService fireRestClientService;
     private final FacilityRestClientService facilityRestClientService;
     private final MapRestClientService mapRestClientService;
+
+    private List<Vehicle> currentListVehicle;
 
     public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
@@ -52,6 +55,10 @@ public class VehicleService {
 
     public List<Vehicle> getPumpers(){
         return vRepo.findByType("PUMPER_TRUCK");
+    }
+
+    public Vehicle findVehicleById(int id){
+        return vRepo.findById(id);
     }
 
     public void moveAllVehicles() {
@@ -98,7 +105,16 @@ public class VehicleService {
         futurCoordList.add(lastCoord);
 
         vehicle.setCoordonnees(futurCoordList);
+        vehicle.setInMovement(true);
         vRepo.save(vehicle);
+    }
+
+    /*public boolean isVehicleInMovement(int id) {
+        return currentVehicle != null && currentVehicle.getId() == id && currentVehicle.isInMovement();
+    }*/
+
+    private Vehicle GetVehicleById(int id) {
+        return vRepo.findById(id);
     }
 
     public void deleteVehicle(int id) {
@@ -128,14 +144,22 @@ public class VehicleService {
         List<VehicleDto> vehicleDtoList = vehicleRestClientService.getTeamVehicles();
 
         for(VehicleDto vehicleDto : vehicleDtoList){
+            Vehicle temp = new Vehicle(vehicleDto);
+            currentListVehicle.add(temp);
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
-            if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat()){
-                this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
+            /*if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat()){ //il faut trouver un moyen de regarder s'il est en mouvement, sinon il recrée une list de coordonnées qui sera re exéxutée apres son premier trahet
+                System.out.println(currentVehicle.getId() + "retourne à la caserne et n'est pas en mouvement: " + currentVehicle.isInMovement());
                 this.backToFacility(vehicleDto,facilityDto);
+                currentVehicle.setInMovement(true);
+                vRepo.save(currentVehicle);
+                System.out.println(currentVehicle.getId() + "retourne à la caserne et est en mouvement: " + currentVehicle.isInMovement());
+
+                //this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
             }
             if(vehicleDto.getLiquidQuantity() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
+                System.out.println("Je cherche un feu");
                 this.findFire(vehicleDto);
-            }
+            }*/
         }
     }
 
@@ -156,6 +180,7 @@ public class VehicleService {
     }
 
     private void backToFacility(VehicleDto vehicleDto, FacilityDto facilityDto) {
+        System.out.println("Je retourne à la caserne");
         Coord coord = new Coord(facilityDto.getLon(), facilityDto.getLat());
         startMoving(vehicleDto.getId(), coord);
     }

@@ -12,4 +12,6 @@ public interface VehicleRepository extends CrudRepository<Vehicle,Integer> {
     List<Vehicle> findByCoordonneesListIsNotEmpty();
 
     List<Vehicle> findByType(String type);
+
+    Vehicle findById(int Id);
 }
