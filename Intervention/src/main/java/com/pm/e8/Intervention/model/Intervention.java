@@ -3,11 +3,13 @@ package com.pm.e8.Intervention.model;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Intervention {
     @Id
+    @GeneratedValue
     private int id;
     private int idFire;
     private int idVehicle;
