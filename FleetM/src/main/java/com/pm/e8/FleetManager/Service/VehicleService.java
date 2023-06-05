@@ -27,6 +27,7 @@ public class VehicleService {
     private final MapRestClientService mapRestClientService;
 
     private final List<Vehicle> currentListVehicle;
+    private List<Integer> fireAvailable;
 
     public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
@@ -36,6 +37,7 @@ public class VehicleService {
         this.facilityRestClientService = facilityRestClientService;
         this.mapRestClientService = mapRestClientService;
         this.currentListVehicle = new ArrayList<>();
+        this.fireAvailable = new ArrayList<>();
     }
 
     public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
@@ -58,9 +60,7 @@ public class VehicleService {
         return vRepo.findByType("PUMPER_TRUCK");
     }
 
-    public Vehicle findVehicleById(int id){
-        return vRepo.findById(id);
-    }
+
 
     public void moveAllVehicles() {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
@@ -84,17 +84,9 @@ public class VehicleService {
         return vehicleRestClientService.getVehicleById(id);
     }
 
-    public List<Vehicle> getCurrentListVehicle() {
-        return currentListVehicle;
-    }
 
-    public boolean isVehicleInMovement(int id) {
-        return currentListVehicle.stream().anyMatch(v -> v.getId() == id && v.isInMovement());
-    }
 
-    public void setCurrentListVehicle(Vehicle currentVehicle) {
-        this.currentListVehicle.add(currentVehicle);
-    }
+
     public void startMoving(int id, Coord coord) {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
@@ -119,9 +111,6 @@ public class VehicleService {
         vRepo.save(vehicle);
     }
 
-    private Vehicle GetVehicleById(int id) {
-        return vRepo.findById(id);
-    }
 
     public void deleteVehicle(int id) {
         vRepo.deleteById(id);
@@ -171,7 +160,6 @@ public class VehicleService {
     public void checkAllVehicles(){
         setCurrentListVehicle();
         for(Vehicle vehicle : currentListVehicle){
-            System.out.println("Liste de vehicle: \n" + currentListVehicle);
             VehicleDto vehicleDto = this.getVehicleById(vehicle.getId());
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
             if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat() && !vehicle.isInMovement()){ //il faut trouver un moyen de regarder s'il est en mouvement, sinon il recrée une list de coordonnées qui sera re exéxutée apres son premier trahet
@@ -180,12 +168,8 @@ public class VehicleService {
                 vehicle.setInMovement(true);
                 vRepo.save(vehicle);
                 System.out.println(vehicle.getId() + " retourne à la caserne et est en mouvement: " + vehicle.isInMovement());
-
-                //this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
             }
             if(vehicleDto.getLiquidQuantity() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
-                /*currentListVehicle.remove(vehicle);
-                setCurrentListVehicle();*/
                 vehicle.setInMovement(false);
                 System.out.println("Je cherche un feu");
                 this.findFire(vehicleDto);
@@ -198,14 +182,22 @@ public class VehicleService {
         if(fireDtoList.isEmpty()){
             return;
         }
-        FireDto fireDto = fireDtoList.get(0);
-        double distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
-        for(FireDto fireDto1 : fireDtoList){
-            distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
-            if(this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto1.getLon(),fireDto1.getLat())) < distance){
-                fireDto = fireDto1;
+        int id = 0;
+        boolean found = false;
+        while (!found){
+            FireDto fireDto = fireDtoList.get(id);
+            if (fireAvailable.isEmpty()){
+                fireAvailable.add(fireDto.getId());
+                found = true;
+            }else if (!fireAvailable.contains(fireDto.getId())){
+                fireAvailable.add(fireDto.getId());
+                found = true;
+            }else{
+                id++;
             }
         }
+        FireDto fireDto = fireRestClientService.getFireDtoById(fireAvailable.get(id));
+        System.out.println(vehicleDto.getId() + " va au feu: " + fireDto.getId());
         this.startMoving(vehicleDto.getId(),new Coord(fireDto.getLon(),fireDto.getLat()));
     }
 
