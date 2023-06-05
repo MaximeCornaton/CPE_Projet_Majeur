@@ -18,11 +18,14 @@ public class Vehicle {
     private float liquidQuantity;
     private float fuel;
     private int crewMember;
+
+    private boolean inMovement;
     private Integer facilityRefID;
     public Double futureLon;
     public Double futureLat;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "vehicle")
     private List<Coordonnees> coordonneesList;
+
 
     public Vehicle() {
     }
@@ -37,6 +40,7 @@ public class Vehicle {
         this.fuel = vehicleDto.getFuel();
         this.crewMember = vehicleDto.getCrewMember();
         this.facilityRefID = vehicleDto.getFacilityRefID();
+        this.inMovement = false; //regarder si c'est pas pcq on l'initialise comme ca qu'il est toujours false
     }
 
     public Integer getId() {
@@ -135,6 +139,18 @@ public class Vehicle {
         this.coordonneesList = coordonneesList;
     }
 
+    public List<Coordonnees> getCoordonneesList() {
+        return coordonneesList;
+    }
+
+    public void setInMovement(boolean inMovement) {
+        this.inMovement = inMovement;
+    }
+
+    /*public boolean getIsInMovement() {
+        return this.inMovement;
+    }*/
+
     @Override
     public String toString() {
         return "Vehicle{" +
@@ -150,5 +166,9 @@ public class Vehicle {
                 ", futureLon=" + futureLon +
                 ", futureLat=" + futureLat +
                 '}';
+    }
+
+    public boolean isInMovement() {
+        return inMovement;
     }
 }
