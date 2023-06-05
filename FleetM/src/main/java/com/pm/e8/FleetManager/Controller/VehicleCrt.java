@@ -1,5 +1,6 @@
 package com.pm.e8.FleetManager.Controller;
 
+import com.pm.e8.FleetManager.Service.VehicleRestClientService;
 import com.pm.e8.FleetManager.Service.VehicleService;
 import com.pm.e8.FleetManager.model.Vehicle;
 import com.project.model.dto.Coord;
@@ -12,9 +13,11 @@ import java.util.List;
 public class VehicleCrt {
 
     private final VehicleService vehicleService;
+    private final VehicleRestClientService vehicleRestClientService;
 
-    public VehicleCrt(VehicleService vehicleService) {
+    public VehicleCrt(VehicleService vehicleService, VehicleRestClientService vehicleRestClientService) {
         this.vehicleService = vehicleService;
+        this.vehicleRestClientService = vehicleRestClientService;
     }
 
     @GetMapping("/vehicles")
@@ -61,4 +64,13 @@ public class VehicleCrt {
         vehicleService.returnVehicle(vehicleId);
     }
 
+    @DeleteMapping("/vehicle/{id}/delete")
+    public void deleteVehicle(@PathVariable int id){
+        vehicleRestClientService.deleteVehicle(id);
+    }
+
+    @PostMapping("/vehicle/add")
+    public void addVehicle(@RequestBody VehicleDto vehicleDto){
+        vehicleRestClientService.addVehicle(vehicleDto);
+    }
 }
