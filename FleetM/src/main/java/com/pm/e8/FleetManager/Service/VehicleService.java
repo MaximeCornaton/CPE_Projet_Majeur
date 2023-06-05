@@ -50,10 +50,6 @@ public class VehicleService {
         }
     }
 
-    public List<Vehicle> getPumpers(){
-        return vRepo.findByType("PUMPER_TRUCK");
-    }
-
     public void moveAllVehicles() {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
@@ -130,22 +126,30 @@ public class VehicleService {
         for(VehicleDto vehicleDto : vehicleDtoList){
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
             if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat()){
-                this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
+                //this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
                 this.backToFacility(vehicleDto,facilityDto);
             }
-            if(vehicleDto.getLiquidQuantity() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
+            else if(vehicleDto.getLiquidQuantity() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
+                this.findFire(vehicleDto);
+            }
+            else{
                 this.findFire(vehicleDto);
             }
         }
     }
 
     private void findFire(VehicleDto vehicleDto) {
-        List<FireDto> fireDtoList = fireRestClientService.getAllFires();
+        List<FireDto> fireDtoList;
+        fireDtoList = fireRestClientService.getFireAround(vehicleDto.getId(),1000000);
         if(fireDtoList.isEmpty()){
-            return;
+            fireDtoList = fireRestClientService.getFireAround(vehicleDto.getId(),500);
+            if (fireDtoList.isEmpty()){
+                return;
+            }
         }
         FireDto fireDto = fireDtoList.get(0);
-        double distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
+        //double distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
+        double distance;
         for(FireDto fireDto1 : fireDtoList){
             distance = this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto.getLon(),fireDto.getLat()));
             if(this.getDistance(new Coord(vehicleDto.getLon(),vehicleDto.getLat()),new Coord(fireDto1.getLon(),fireDto1.getLat())) < distance){

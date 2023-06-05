@@ -5,9 +5,8 @@ import com.pm.e8.FireManager.model.Fire;
 import com.pm.e8.FireManager.repository.FireRepository;
 import com.project.model.dto.Coord;
 import com.project.model.dto.FireDto;
-import org.checkerframework.checker.units.qual.C;
+import com.project.model.dto.VehicleDto;
 import org.springframework.stereotype.Service;
-import com.pm.e8.FireManager.model.Fire;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,6 +18,7 @@ import java.util.Optional;
 public class FireService {
     private final FireRestClientService fireRestClientService;
     private final FireRepository fRepo;
+    private VehicleRestService vehicleRestService;
 
     public FireService(FireRestClientService fireRestClientService,FireRepository fRepo) {
         this.fireRestClientService = fireRestClientService;
@@ -62,28 +62,21 @@ public class FireService {
         return Lists.newArrayList(fRepo.findAll());
     }
     List<Fire> FiresAround = new ArrayList<Fire>();
-    public List<Fire> getFiresAround(int idf, int radius) {
+    public List<Fire> getFiresAround(int idv, int radius) {
         List<Fire> fList = getFireList();
-        Fire fire = null;
 
-        if(fRepo.findById(idf).isEmpty()){
-            return null;
-        }
-        else {
-            fire = fRepo.findById(idf).get();
-        }
+        VehicleDto v = vehicleRestService.getVehicle(idv);
+
         for(Fire f : fList){
-            if(!f.equals(fire)){
-                if(distance(fire,f) <= radius){
+                if(distance(v,f) <= radius){
                     FiresAround.add(f);
-                }
             }
         }
         return FiresAround;
     }
 
-    public double distance(Fire f1, Fire f2){
-        return getDistanceBetweenCoords(new Coord(f1.getLat(),f1.getLon()),new Coord(f2.getLat(),f2.getLon()));
+    public double distance(VehicleDto v1, Fire f2){
+        return getDistanceBetweenCoords(new Coord(v1.getLat(),v1.getLon()),new Coord(f2.getLat(),f2.getLon()));
     }
 
     public Double getDistanceBetweenCoords(Coord coord1,Coord coord2){

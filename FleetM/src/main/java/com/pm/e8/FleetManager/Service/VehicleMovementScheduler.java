@@ -18,6 +18,7 @@ public class VehicleMovementScheduler {
 
     @Scheduled(fixedRate = 5000)
     public void checkVehicles() {
+        System.out.println("TEST");
         vehicleService.checkAllVehicles();
     }
 }
