@@ -227,7 +227,6 @@ public class VehicleService {
         VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(vehicleId);
         FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
         Coord coord = new Coord(facilityDto.getLon(), facilityDto.getLat());
-        startMoving(vehicleDto.getId(), coord);
-
+        startMoving(vehicleDto.getId(), coord); //commentaire
     }
 }
