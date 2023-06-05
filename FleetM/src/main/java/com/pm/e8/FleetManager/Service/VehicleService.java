@@ -26,7 +26,7 @@ public class VehicleService {
     private final FacilityRestClientService facilityRestClientService;
     private final MapRestClientService mapRestClientService;
 
-    private List<Vehicle> currentListVehicle;
+    private final List<Vehicle> currentListVehicle;
 
     public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
@@ -35,6 +35,7 @@ public class VehicleService {
         this.fireRestClientService = fireRestClientService;
         this.facilityRestClientService = facilityRestClientService;
         this.mapRestClientService = mapRestClientService;
+        this.currentListVehicle = new ArrayList<>();
     }
 
     public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
@@ -67,7 +68,7 @@ public class VehicleService {
             Coordonnees coord = cRepo.findTopByVehicleIdOrderByIdAsc(vehicle.getId()).orElseThrow();
             Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
             cRepo.delete(coord);
-            System.out.println(vRepo.save(newVehicle));
+            //System.out.println(vRepo.save(newVehicle));
         }
     }
 
@@ -83,8 +84,17 @@ public class VehicleService {
         return vehicleRestClientService.getVehicleById(id);
     }
 
+    public List<Vehicle> getCurrentListVehicle() {
+        return currentListVehicle;
+    }
 
+    public boolean isVehicleInMovement(int id) {
+        return currentListVehicle.stream().anyMatch(v -> v.getId() == id && v.isInMovement());
+    }
 
+    public void setCurrentListVehicle(Vehicle currentVehicle) {
+        this.currentListVehicle.add(currentVehicle);
+    }
     public void startMoving(int id, Coord coord) {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
@@ -108,10 +118,6 @@ public class VehicleService {
         vehicle.setInMovement(true);
         vRepo.save(vehicle);
     }
-
-    /*public boolean isVehicleInMovement(int id) {
-        return currentVehicle != null && currentVehicle.getId() == id && currentVehicle.isInMovement();
-    }*/
 
     private Vehicle GetVehicleById(int id) {
         return vRepo.findById(id);
@@ -140,26 +146,50 @@ public class VehicleService {
         return (distancePosFire + distanceFireFacility) < this.getDistanceRealizable(new Vehicle(vehicleDto));
     }
 
-    public void checkAllVehicles(){
+    public void setCurrentListVehicle() {
         List<VehicleDto> vehicleDtoList = vehicleRestClientService.getTeamVehicles();
+        if (currentListVehicle.isEmpty()) {
+            for (VehicleDto vehicleDto : vehicleDtoList) {
+                Vehicle temp = new Vehicle(vehicleDto);
+                currentListVehicle.add(temp);
+            }
+        }else{
+            List<Integer> idList = new ArrayList<>();
+            for (Vehicle vehicle : currentListVehicle) {
+                idList.add(vehicle.getId());
+            }
+            for (VehicleDto vehicleDto : vehicleDtoList) {
+                Vehicle temp = new Vehicle(vehicleDto);
+                int id = temp.getId();
+                if (!idList.contains(id)){
+                    currentListVehicle.add(temp);
+                }
+            }
+        }
+    }
 
-        for(VehicleDto vehicleDto : vehicleDtoList){
-            Vehicle temp = new Vehicle(vehicleDto);
-            currentListVehicle.add(temp);
+    public void checkAllVehicles(){
+        setCurrentListVehicle();
+        for(Vehicle vehicle : currentListVehicle){
+            System.out.println("Liste de vehicle: \n" + currentListVehicle);
+            VehicleDto vehicleDto = this.getVehicleById(vehicle.getId());
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
-            /*if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat()){ //il faut trouver un moyen de regarder s'il est en mouvement, sinon il recrée une list de coordonnées qui sera re exéxutée apres son premier trahet
-                System.out.println(currentVehicle.getId() + "retourne à la caserne et n'est pas en mouvement: " + currentVehicle.isInMovement());
+            if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat() && !vehicle.isInMovement()){ //il faut trouver un moyen de regarder s'il est en mouvement, sinon il recrée une list de coordonnées qui sera re exéxutée apres son premier trahet
+               System.out.println(vehicle.getId() + " retourne à la caserne et n'est pas en mouvement: " + vehicle.isInMovement());
                 this.backToFacility(vehicleDto,facilityDto);
-                currentVehicle.setInMovement(true);
-                vRepo.save(currentVehicle);
-                System.out.println(currentVehicle.getId() + "retourne à la caserne et est en mouvement: " + currentVehicle.isInMovement());
+                vehicle.setInMovement(true);
+                vRepo.save(vehicle);
+                System.out.println(vehicle.getId() + " retourne à la caserne et est en mouvement: " + vehicle.isInMovement());
 
                 //this.startMoving(vehicleDto.getId(),new Coord(facilityDto.getLon(),facilityDto.getLat()));
             }
             if(vehicleDto.getLiquidQuantity() > vehicleDto.getType().getLiquidCapacity()-1 && vehicleDto.getLon() == facilityDto.getLon() && vehicleDto.getLat() == facilityDto.getLat()){
+                /*currentListVehicle.remove(vehicle);
+                setCurrentListVehicle();*/
+                vehicle.setInMovement(false);
                 System.out.println("Je cherche un feu");
                 this.findFire(vehicleDto);
-            }*/
+            }
         }
     }
 
@@ -186,8 +216,9 @@ public class VehicleService {
     }
 
     public void updateVehicleLiquidType(int id, String liquidType) {
-        FacilityDto facilityDto = facilityRestClientService.getFacility(38);
         VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
+        FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
+
         if(facilityDto.getLat() == vehicleDto.getLat() && facilityDto.getLon() == vehicleDto.getLon()) {
             vehicleDto.setLiquidType(LiquidType.valueOf(liquidType));
             vehicleRestClientService.updateVehicle(id,vehicleDto);
