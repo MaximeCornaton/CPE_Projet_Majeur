@@ -42,5 +42,10 @@ public class FireCrt {
         return fServ.getTypeFires(type);
     }
 
+    @GetMapping("/types")
+    public List<String> getTypes(){
+        return fServ.getTypes();
+    }
+
 
 }

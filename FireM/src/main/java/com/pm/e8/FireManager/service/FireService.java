@@ -102,4 +102,16 @@ public class FireService {
         }
         return typeFires;
     }
+
+    public List<String> getTypes(){
+        List<String> typeList = new ArrayList<>();
+        typeList.add("E_Electric");
+        typeList.add("B_Gasoline");
+        typeList.add("D_Metals");
+        typeList.add("C_Flammable_Gases");
+        typeList.add("B_Plastics");
+        typeList.add("B_Alcohol");
+        typeList.add("A");
+        return typeList;
+    }
 }
