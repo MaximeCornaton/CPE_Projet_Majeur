@@ -1,7 +1,9 @@
 package com.pm.e8.Intervention.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pm.e8.Intervention.model.Coordonnees;
 import com.pm.e8.Intervention.model.Intervention;
+import com.project.model.dto.Coord;
 import org.springframework.web.bind.annotation.*;
 import com.pm.e8.Intervention.service.InterventionService;
 
@@ -39,6 +41,11 @@ public class InterventionCrt {
     @GetMapping("/intervention/inProgress")
     public List<Intervention> inProgressIntervention(){
         return interventionService.inProgressIntervention();
+    }
+
+    @PostMapping("/intervention/autoIntervention/{fireId}/{vehicleId}")
+    public void AutoIntervention(@PathVariable int fireId, @PathVariable int vehicleId,@RequestBody List<Coordonnees> coordList){
+        interventionService.AutoIntervention(fireId,vehicleId,coordList);
     }
 
 /*

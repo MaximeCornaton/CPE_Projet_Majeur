@@ -28,7 +28,7 @@ public class Intervention {
     public List<Coordonnees> getCoordonnees() {
         return coordonneesList;
     }
-    public void setCoordonnees(List<Coord> coordonnees) {
+    public void setCoordonnees(List<Coordonnees> coordonnees) {
         this.coordonneesList = coordonnees;
     }
 
