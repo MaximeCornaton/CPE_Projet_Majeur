@@ -43,6 +43,9 @@ const fireStationsLayer = L.layerGroup().addTo(map).setZIndex(30);
 const areasLayer = L.layerGroup().addTo(map).setZIndex(40);
 
 const fire_types_truck_possibilities = {}; // { fire_type: [truck_type1, truck_type2],  }
+let fire_type = 'all';
+let fire_intensity = 10;
+let fire_range = 10;
 
 const workArea = L.rectangle([[45.67, 4.76], [45.83, 5.00]], { color: 'blue', weight: 2}).addTo(areasLayer);
 
@@ -67,6 +70,16 @@ const settingsControl = L.Control.extend({
         fires.title = 'Afficher/Masquer les incendies';
 
         const fireMenu = L.DomUtil.create('div', 'leaflet-touch leaflet-control-custom', container);
+
+        fireMenu.style.position = 'absolute';
+        fireMenu.style.right = '0';
+        fireMenu.style.backgroundColor = 'white';
+        fireMenu.style.padding = '10px';
+        //fireMenu.style.borderRadius = '5px';
+        fireMenu.style.boxShadow = '0 0 6px rgba(0, 0, 0, 0.3)';
+        fireMenu.style.width = '200px';
+        fireMenu.style.display = 'flex';
+        fireMenu.style.flexDirection = 'column';
         fireMenu.style.display = 'none';
 
         const fireType = L.DomUtil.create('select', 'leaflet-touch leaflet-control-custom', fireMenu);
@@ -85,6 +98,34 @@ const settingsControl = L.Control.extend({
         );
         });
 
+        const textIntensite = L.DomUtil.create('p', 'leaflet-touch leaflet-control-custom', fireMenu);
+        textIntensite.innerHTML = "Intensité minimale du feu :";
+        const sliderIntensite = L.DomUtil.create('input', 'leaflet-touch leaflet-control-custom', fireMenu);
+        sliderIntensite.type = 'range';
+        sliderIntensite.min = 0;
+        sliderIntensite.max = 100;
+        sliderIntensite.value = fire_intensity;
+        sliderIntensite.title = "Choisir l'intensité minimale du feu";
+
+        const textSurface = L.DomUtil.create('p', 'leaflet-touch leaflet-control-custom', fireMenu);
+        textSurface.innerHTML = "Surface minimale du feu :";
+        const sliderRange = L.DomUtil.create('input', 'leaflet-touch leaflet-control-custom', fireMenu);
+        sliderRange.type = 'range';
+        sliderRange.min = 0;
+        sliderRange.max = 100;
+        sliderRange.value = fire_range;
+        sliderRange.title = "Choisir la surface minimale du feu";
+
+
+        L.DomEvent.on(sliderIntensite, 'change', function() {
+            fire_intensity = sliderIntensite.value;
+        });
+
+        L.DomEvent.on(sliderRange, 'change', function() {
+            fire_range = sliderRange.value;
+        });
+
+
         L.DomEvent.on(areas, 'click', function() {
             toggleLayer(areasLayer);
         });
@@ -102,12 +143,7 @@ const settingsControl = L.Control.extend({
         });
 
         L.DomEvent.on(fireType, 'change', function() {
-            const fireType_ = fireType.value;
-            if (fireType_ === 'all') {
-                //TODO: afficher tous les incendies
-            }else {
-                //TODO: afficher les incendies du type fireType_
-            }
+            fire_type = fireType.value;
         });
 
         return container;
@@ -313,29 +349,33 @@ function displayFires(map) {
         if (fireExists(id)) {
             const fire = fires_[id];
             existingFires.push(id);
-            if (!fireIsDisplayed(id)) {
-                const marker = createMarker(firesLayer, fire.lat, fire.lon, icon_fire);
+            if( fire_type == fire.type || fire_type == "all" && fire.intensity >= fire_intensity && fire.range >= fire_range){
+                if (!fireIsDisplayed(id)) {
+                    const marker = createMarker(firesLayer, fire.lat, fire.lon, icon_fire);
 
-                const popupContent = `
-                    <strong>ID:</strong> ${fire.id}<br>
-                    <strong>Type:</strong> ${fire.type}<br>
-                    <strong>Intensit&#xE9;:</strong> ${fire.intensity}<br>
-                    <strong>Surface:</strong> ${fire.range}<br>
-                    <select id="option-${fire.id}" onchange="updateVehicleOptions(${fire.id})">
-                        <option value="0">--Option</option>
-                        <option value="1">Type</option>
-                    </select>
-                    <select id="selectVehicle-${fire.id}">
-                        
-                        ${getVehicleOptions(fire.type, `option-${fire.id}`)}
-                    </select>
-                    <button onclick="sendVehicle(${fire.id}, document.getElementById('selectVehicle-${fire.id}').value)">Envoyer</button>
-                `;
+                    const popupContent = `
+                        <strong>ID:</strong> ${fire.id}<br>
+                        <strong>Type:</strong> ${fire.type}<br>
+                        <strong>Intensit&#xE9;:</strong> ${fire.intensity}<br>
+                        <strong>Surface:</strong> ${fire.range}<br>
+                        <select id="option-${fire.id}" onchange="updateVehicleOptions(${fire.id})">
+                            <option value="0">--Option</option>
+                            <option value="1">Type</option>
+                        </select>
+                        <select id="selectVehicle-${fire.id}">
+                            
+                            ${getVehicleOptions(fire.type, `option-${fire.id}`)}
+                        </select>
+                        <button onclick="sendVehicle(${fire.id}, document.getElementById('selectVehicle-${fire.id}').value)">Envoyer</button>
+                    `;
 
-                marker.bindPopup(popupContent);
+                    marker.bindPopup(popupContent);
 
-                firesMarkers_[id] = marker;
+                    firesMarkers_[id] = marker;
 
+                }
+            }else{
+                undisplayFire(id);
             }
         }
     }

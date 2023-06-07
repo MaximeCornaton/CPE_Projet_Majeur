@@ -84,7 +84,7 @@ function postAddVehicle(lon, lat, type, liquidType, liquidQuantity, fuel, crewMe
             "liquidQuantity": liquidQuantity,
             "fuel": fuel,
             "crewMember": crewMember,
-            "facilityRef": facilityRef
+            "facilityRefID": facilityRef
         })
     })
     console.log("camion ajoute");

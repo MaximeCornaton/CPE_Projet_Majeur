@@ -78,7 +78,7 @@
         </div>
 
         <div class="d-flex justify-content-center animated--grow-in">
-        <a id="btnCamion" class="btn btn-primary btn-icon-split mt-3 mb-3" data-toggle="collapse" href="#formCamion">
+        <a id="btnCamion" href="#formCamion" class="btn btn-primary btn-icon-split mt-3 mb-3" data-toggle="collapse" >
           <span class="icon text-white-50">
             <i class="fas fa-plus"></i>
           </span>
@@ -91,11 +91,16 @@
             Ajouter un camion
           </div>
           <div class="card-body">
-            <form class="form-horizontal ">
-              <input type="text" class="form-control mb-3" id="inputName" placeholder="Nom du camion">
+            <form class="form-horizontal" >
               <input type="text" class="form-control mb-3" id="inputType" placeholder="Type">
-              <input type="text" class="form-control mb-3" id="inputCapacity" placeholder="Capacité">
-
+              <input type="text" class="form-control mb-3" id="inputLongitude" placeholder="Longitude">
+              <input type="text" class="form-control mb-3" id="inputLat" placeholder="Latitude">
+              <input type="text" class="form-control mb-3" id="inputLiquidType" placeholder="Type de liquide">
+              <input type="text" class="form-control mb-3" id="inputLiquidCapacity" placeholder="Capacité de liquide">
+              <input type="text" class="form-control mb-3" id="inputFuel" placeholder="Quantité de carburant">
+              <input type="text" class="form-control mb-3" id="inputCrewMember" placeholder="Nombre de membres">
+              <input type="text" class="form-control mb-3" id="inputFacilityRefID" placeholder="Caserne">
+              <button type="submit" class="btn btn-primary" id="submitBtn">Ajouter</button>
             </form>
           </div>
         </div>
@@ -124,6 +129,37 @@
 <script>
   $(document).ready(function() {
     tableVehicles();
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    tableVehicles();
+
+    // Add event listener to the submit button
+    $("#submitBtn").on("click", function(event) {
+      event.preventDefault(); // Prevent form submission
+
+      // Get input values
+      var lon = $("#inputLongitude").val();
+      var lat = $("#inputLat").val();
+      var type = $("#inputType").val();
+      var liquidType = $("#inputLiquidType").val();
+      var liquidQuantity = $("#inputLiquidCapacity").val();
+      var fuel = $("#inputFuel").val();
+      var crewMember = $("#inputCrewMember").val();
+      var facilityRef = $("#inputFacilityRefID").val();
+
+      // Call the postAddVehicle function
+      postAddVehicle(lon, lat, type, liquidType, liquidQuantity, fuel, crewMember, facilityRef)
+              .then(function(response) {
+                console.log("Camion ajouté avec succès!");
+                // Handle success response if needed
+              })
+              .catch(function(error) {
+                console.error("Erreur lors de l'ajout du camion:", error);
+                // Handle error if needed
+              });
+    });
   });
 </script>
 
