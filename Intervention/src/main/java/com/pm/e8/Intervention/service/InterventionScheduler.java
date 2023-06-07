@@ -2,6 +2,7 @@ package com.pm.e8.Intervention.service;
 
 import com.google.common.collect.Lists;
 import com.pm.e8.Intervention.model.Intervention;
+import com.pm.e8.Intervention.model.Status;
 import com.pm.e8.Intervention.repository.InterventionRepository;
 import com.project.model.dto.FireDto;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,13 +26,13 @@ public class InterventionScheduler {
         List<Intervention> InterventionList = Lists.newArrayList(iRepo.findAll());
         List<FireDto> fList = fireRestClientService.getFires();
         for (Intervention i : InterventionList) {
-            if (i.getStatus().equals("En cours")) {
+            if (i.getStatus().equals(Status.EN_COURS)) {
                 for (FireDto f : fList) {
                     if (f.getId() == i.getIdFire()) {
                         //Rien à faire le feu existe encore
                     }
                     else {
-                        i.setStatus("Terminé");
+                        i.setStatus(Status.TERMINEE);
                     }
                 }
                 iRepo.save(i);
