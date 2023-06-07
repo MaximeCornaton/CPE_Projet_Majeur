@@ -119,3 +119,19 @@ function getInterventionsInProgress() {
         },
     })
 }
+
+async function getFireTypes() {
+    try {
+        const response = await fetch('http://localhost:8000/fire-service/types');
+        if (!response.ok) {
+            throw new Error('La requête a échoué avec le statut ' + response.status);
+        }
+        const fireTypesAll = await response.json();
+        // Faire quelque chose avec fireTypesAll
+        return fireTypesAll;
+    } catch (error) {
+        // Gérer les erreurs éventuelles
+        console.error(error);
+        throw error; // Rethrow l'erreur pour la traiter en amont si nécessaire
+    }
+}
