@@ -2,6 +2,7 @@ package com.pm.e8.FireManager.controller;
 
 import com.pm.e8.FireManager.model.Fire;
 import com.project.model.dto.Coord;
+import com.project.model.dto.FireDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.pm.e8.FireManager.service.FireService;
@@ -31,11 +32,15 @@ public class FireCrt {
         return fServ.GetFireCoord(idf);
     }
 
-    @GetMapping("/fireAround/{idf}/{radius}")
-    public List<Fire> getFireAround(@PathVariable int idf, @PathVariable int radius){
-        return fServ.getFiresAround(idf, radius);
+    @GetMapping("/fireAround/{idv}/{radius}")
+    public List<Fire> getFireAround(@PathVariable int idv, @PathVariable int radius){
+        return fServ.getFiresAround(idv, radius);
     }
 
+    @GetMapping("/fire/{type}")
+    public List<FireDto> getFireType(@PathVariable String type){
+        return fServ.getTypeFires(type);
+    }
 
 
 }

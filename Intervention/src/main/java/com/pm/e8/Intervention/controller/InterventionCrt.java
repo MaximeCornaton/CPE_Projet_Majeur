@@ -1,9 +1,11 @@
 package com.pm.e8.Intervention.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pm.e8.Intervention.model.Intervention;
+import org.springframework.web.bind.annotation.*;
 import com.pm.e8.Intervention.service.InterventionService;
+
+import java.util.List;
 
 @RestController
 public class InterventionCrt {
@@ -18,4 +20,32 @@ public class InterventionCrt {
     public void createIntervention(@RequestParam int fireId, int vehicleId){
         interventionService.createIntervention(fireId,vehicleId);
     }
+
+    @GetMapping("/interventions")
+    public List<Intervention> getInterventions(){
+        return interventionService.getInterventions();
+    }
+
+    @DeleteMapping("/intervention/clean")
+    public void cleanInter(){
+        interventionService.cleanInter();
+    }
+
+    @GetMapping("/intervention/done")
+    public List<Intervention> doneIntervention(){
+        return interventionService.doneIntervention();
+    }
+
+    @GetMapping("/intervention/inProgress")
+    public List<Intervention> inProgressIntervention(){
+        return interventionService.inProgressIntervention();
+    }
+
+/*
+    @PostMapping("/interventions")
+    public void createInterventions(@RequestParam List<Integer> fireIds, List<Integer> vehicleIds){
+        for (int vehicleId : vehicleIds) {
+            interventionService.createInterventions(fireIds,vehicleIds);
+        }
+    }*/
 }

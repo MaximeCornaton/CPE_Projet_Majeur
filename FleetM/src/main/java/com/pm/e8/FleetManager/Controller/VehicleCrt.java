@@ -1,11 +1,10 @@
 package com.pm.e8.FleetManager.Controller;
 
+import com.pm.e8.FleetManager.Service.VehicleRestClientService;
 import com.pm.e8.FleetManager.Service.VehicleService;
+import com.pm.e8.FleetManager.model.Vehicle;
 import com.project.model.dto.Coord;
-import com.project.model.dto.FacilityDto;
-import com.project.model.dto.FireDto;
 import com.project.model.dto.VehicleDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,9 +13,11 @@ import java.util.List;
 public class VehicleCrt {
 
     private final VehicleService vehicleService;
+    private final VehicleRestClientService vehicleRestClientService;
 
-    public VehicleCrt(VehicleService vehicleService) {
+    public VehicleCrt(VehicleService vehicleService, VehicleRestClientService vehicleRestClientService) {
         this.vehicleService = vehicleService;
+        this.vehicleRestClientService = vehicleRestClientService;
     }
 
     @GetMapping("/vehicles")
@@ -58,4 +59,18 @@ public class VehicleCrt {
         return vehicleService.enoughFuel(vehicleService.getVehicleById(id), fireDtoId, facilityDtoId);
     }
 
+    @PostMapping("/vehicles/{vehicleId}/return")
+    public void returnVehicle(@PathVariable int vehicleId){
+        vehicleService.returnVehicle(vehicleId);
+    }
+
+    @DeleteMapping("/vehicle/{id}/delete")
+    public void deleteVehicle(@PathVariable int id){
+        vehicleService.deleteVehicle(id);
+    }
+
+    @PostMapping("/vehicle/add")
+    public void addVehicle(@RequestBody VehicleDto vehicleDto){
+        vehicleRestClientService.addVehicle(vehicleDto);
+    }
 }

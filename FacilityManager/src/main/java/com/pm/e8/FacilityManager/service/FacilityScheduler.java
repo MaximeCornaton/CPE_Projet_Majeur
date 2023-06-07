@@ -20,7 +20,7 @@ public class FacilityScheduler {
         this.fRepo = fRepo;
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 5000)
     public void UpdateBDD() {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/facility";

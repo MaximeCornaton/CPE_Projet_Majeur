@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 public class FireRestClientService {
 
@@ -24,6 +26,17 @@ public class FireRestClientService {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/fires/{id}";
         ResponseEntity<FireDto> response = restTemplate.getForEntity(url, FireDto.class, fireId);
+        if(response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody();
+        } else {
+            return null;
+        }
+    }
+
+    public List<FireDto> getFires(){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8000/fire-service/fires";
+        ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         if(response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         } else {
