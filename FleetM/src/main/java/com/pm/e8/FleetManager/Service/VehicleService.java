@@ -22,17 +22,19 @@ public class VehicleService {
     private final FireRestClientService fireRestClientService;
     private final FacilityRestClientService facilityRestClientService;
     private final MapRestClientService mapRestClientService;
+    private final InterventionRestClientService interventionRestClientService;
 
     private final List<Vehicle> currentListVehicle;
     private List<Integer> fireAvailable;
 
-    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService) {
+    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService, InterventionRestClientService interventionRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
         this.vRepo = vRepo;
         this.cRepo = cRepo;
         this.fireRestClientService = fireRestClientService;
         this.facilityRestClientService = facilityRestClientService;
         this.mapRestClientService = mapRestClientService;
+        this.interventionRestClientService = interventionRestClientService;
         this.currentListVehicle = new ArrayList<>();
         this.fireAvailable = new ArrayList<>();
     }
@@ -110,6 +112,8 @@ public class VehicleService {
         Coordonnees lastCoord = new Coordonnees(coord.getLon(),coord.getLat());
         lastCoord.setVehicle(vehicle);
         futurCoordList.add(lastCoord);
+
+        interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget() , coordList);
 
         vehicle.setCoordonnees(futurCoordList);
         vehicle.setInMovement(true);
