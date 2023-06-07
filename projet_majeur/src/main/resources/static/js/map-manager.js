@@ -5,8 +5,7 @@ const vehiclesLayer = L.layerGroup().addTo(map).setZIndex(20);
 const fireStationsLayer = L.layerGroup().addTo(map).setZIndex(30);
 const areasLayer = L.layerGroup().addTo(map).setZIndex(40);
 
-const fire_types = []
-const fire_type_selected = ""
+const fire_types_truck_possibilities = {}; // { fire_type: [truck_type1, truck_type2],  }
 
 const workArea = L.rectangle([[45.67, 4.76], [45.83, 5.00]], { color: 'blue', weight: 2}).addTo(areasLayer);
 
@@ -36,9 +35,18 @@ const settingsControl = L.Control.extend({
         const fireType = L.DomUtil.create('select', 'leaflet-touch leaflet-control-custom', fireMenu);
         fireType.title = 'Choisir le type de feu';
         const fireTypeOption1 = L.DomUtil.create('option', 'leaflet-touch leaflet-control-custom', fireType);
-        fireTypeOption1.value = '0';
+        fireTypeOption1.value = 'all';
         fireTypeOption1.innerHTML = '--Type de feu';
 
+        getFireTypes().then(fireTypes => {
+            fireTypes.forEach(fireType_ => {
+                const fireTypeOption = L.DomUtil.create('option', 'leaflet-touch leaflet-control-custom', fireType);
+                fireTypeOption.value = fireType_;
+                fireTypeOption.innerHTML = fireType_;
+                fireType.appendChild(fireTypeOption);
+            }
+        );
+        });
 
         L.DomEvent.on(areas, 'click', function() {
             toggleLayer(areasLayer);
@@ -57,7 +65,12 @@ const settingsControl = L.Control.extend({
         });
 
         L.DomEvent.on(fireType, 'change', function() {
-            toggleLayer(firesLayer);
+            const fireType_ = fireType.value;
+            if (fireType_ === 'all') {
+                //afficher tous les incendies
+            }else {
+                //afficher les incendies du type fireType_
+            }
         });
 
         return container;
