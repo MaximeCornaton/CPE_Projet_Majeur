@@ -18,6 +18,7 @@ public class Vehicle {
     private float liquidQuantity;
     private float fuel;
     private int crewMember;
+
     private boolean inMovement;
     private Integer facilityRefID;
     public Double futureLon;
