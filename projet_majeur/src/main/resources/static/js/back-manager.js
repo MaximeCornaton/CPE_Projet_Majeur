@@ -56,3 +56,36 @@ function postReturnVehicle(vehicleId) {
     })
     console.log("camion retourne");
 }
+
+
+//function qui supprime un camion
+function deleteDeleteVehicle(vehicleId) {
+    return fetch(`http://localhost:8000/fleet-service/vehicle/${vehicleId}/delete`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+    console.log("camion supprime");
+}
+
+//function pour ajouter un camion
+function postAddVehicle(lon, lat, type, liquidType, liquidQuantity, fuel, crewMember, facilityRef) {
+    return fetch(`http://localhost:8000/fleet-service/vehicle/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "lon": lon,
+            "lat": lat,
+            "type": type,
+            "liquidType": liquidType,
+            "liquidQuantity": liquidQuantity,
+            "fuel": fuel,
+            "crewMember": crewMember,
+            "facilityRef": facilityRef
+        })
+    })
+    console.log("camion ajoute");
+}
