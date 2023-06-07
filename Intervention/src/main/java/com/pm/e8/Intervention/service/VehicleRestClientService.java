@@ -36,4 +36,15 @@ public class VehicleRestClientService {
                 .queryParam("liquidType", liquidType);
         restTemplate.put(builder.buildAndExpand(vehicleId).toUri(), null);
     }
+    public VehicleDto getVehicle(int vehicleId) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8000/fleet-service/vehicle/{id}";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        ResponseEntity<VehicleDto> response = restTemplate.exchange(builder.buildAndExpand(vehicleId).toUri(), HttpMethod.GET, null, VehicleDto.class);
+        if(response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody();
+        } else {
+            return null;
+        }
+    }
 }

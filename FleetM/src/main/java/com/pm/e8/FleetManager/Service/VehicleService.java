@@ -76,6 +76,14 @@ public class VehicleService {
         return vehicle.getFuel();
     }
 
+    private List<Integer> getFireAvailable(){
+        return this.fireAvailable;
+    }
+
+    private List<Vehicle> getCurrentListVehicle(){
+        return this.currentListVehicle;
+    }
+
     public List<VehicleDto> getTeamVehicles() {
         return vehicleRestClientService.getTeamVehicles();
     }
