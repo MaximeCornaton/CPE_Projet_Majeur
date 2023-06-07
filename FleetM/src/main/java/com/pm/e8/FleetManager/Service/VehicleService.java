@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class VehicleService {
@@ -25,17 +22,19 @@ public class VehicleService {
     private final FireRestClientService fireRestClientService;
     private final FacilityRestClientService facilityRestClientService;
     private final MapRestClientService mapRestClientService;
+    private final InterventionRestClientService interventionRestClientService;
 
     private final List<Vehicle> currentListVehicle;
     private List<Integer> fireAvailable;
 
-    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService) {
+    public VehicleService(VehicleRestClientService vehicleRestClientService, VehicleRepository vRepo, CoordonneesRepository cRepo, FireRestClientService fireRestClientService, FacilityRestClientService facilityRestClientService, MapRestClientService mapRestClientService, InterventionRestClientService interventionRestClientService) {
         this.vehicleRestClientService = vehicleRestClientService;
         this.vRepo = vRepo;
         this.cRepo = cRepo;
         this.fireRestClientService = fireRestClientService;
         this.facilityRestClientService = facilityRestClientService;
         this.mapRestClientService = mapRestClientService;
+        this.interventionRestClientService = interventionRestClientService;
         this.currentListVehicle = new ArrayList<>();
         this.fireAvailable = new ArrayList<>();
     }
@@ -113,6 +112,8 @@ public class VehicleService {
         Coordonnees lastCoord = new Coordonnees(coord.getLon(),coord.getLat());
         lastCoord.setVehicle(vehicle);
         futurCoordList.add(lastCoord);
+
+        //interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget() , coordList);
 
         vehicle.setCoordonnees(futurCoordList);
         vehicle.setInMovement(true);
@@ -200,6 +201,8 @@ public class VehicleService {
         while (!found){
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
+                fireAvailable.add(fireDto.getId());
+                found = true;
                 try {
                     if (fireRestClientService.getFireDtoById(fireDto.getId()).getType().equals("E_Electric")){
                         found = true;
@@ -286,5 +289,21 @@ public class VehicleService {
 
         }
         vehicleRestClientService.deleteVehicleRest(id);
+    }
+
+    public Map<FireType, List<VehicleDto>> getFireTypeVehicleMap() {
+        Map<FireType,List<VehicleDto>> fireTypeVehicleMap = new HashMap<>();
+        List<VehicleDto> vehicleDtoList = this.getTeamVehicles();
+
+        for(FireType fireType : FireType.values()){
+            fireTypeVehicleMap.put(fireType,new ArrayList<>());
+            for(VehicleDto v:vehicleDtoList){
+                float efficiency = v.getLiquidType().getEfficiency(String.valueOf(fireType));
+                if(efficiency > 0){
+                    fireTypeVehicleMap.get(fireType).add(v);
+                }
+            }
+        }
+        return fireTypeVehicleMap;
     }
 }

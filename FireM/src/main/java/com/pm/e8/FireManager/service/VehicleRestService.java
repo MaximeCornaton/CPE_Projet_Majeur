@@ -3,6 +3,8 @@ package com.pm.e8.FireManager.service;
 import com.project.model.dto.VehicleDto;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 public class VehicleRestService {
 
     public VehicleRestService() {
@@ -14,4 +16,5 @@ public class VehicleRestService {
         assert v != null;
         return v;
     }
+
 }

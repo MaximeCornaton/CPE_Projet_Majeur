@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pm.e8.FireManager.service.FireService;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -40,6 +41,11 @@ public class FireCrt {
     @GetMapping("/fire/{type}")
     public List<FireDto> getFireType(@PathVariable String type){
         return fServ.getTypeFires(type);
+    }
+
+    @GetMapping("/types")
+    public String getTypes(){
+        return fServ.getTypes();
     }
 
 

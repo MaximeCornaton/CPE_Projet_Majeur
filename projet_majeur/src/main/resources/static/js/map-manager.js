@@ -1,60 +1,4 @@
 map = createMap('map');
-map.doubleClickZoom.disable();
-
-const firesLayer = L.layerGroup().addTo(map);
-const vehiclesLayer = L.layerGroup().addTo(map);
-const fireStationsLayer = L.layerGroup().addTo(map);
-const areasLayer = L.layerGroup().addTo(map);
-firesLayer.setZIndex(10);
-vehiclesLayer.setZIndex(20);
-fireStationsLayer.setZIndex(30);
-areasLayer.setZIndex(40);
-
-const workArea = L.rectangle([[45.67, 4.76], [45.83, 5.00]], { color: 'blue', weight: 2}).addTo(areasLayer);
-
-const settingsControl = L.Control.extend({
-    onAdd: function() {
-        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-
-        const areas = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
-        areas.innerHTML = '<i class="fas fa-map-marked-alt"></i>'
-        areas.title = 'Afficher/Masquer les zones';
-
-        const vehicles = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
-        vehicles.innerHTML = '<i class="fas fa-truck"></i>'
-        vehicles.title = 'Afficher/Masquer les véhicules';
-
-        const fireStations = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
-        fireStations.innerHTML = '<i class="fas fa-home "></i>'
-        fireStations.title = 'Afficher/Masquer les casernes';
-
-        const fires = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
-        fires.innerHTML = '<i class="fas fa-fire"></i>'
-        fires.title = 'Afficher/Masquer les incendies';
-
-        L.DomEvent.on(areas, 'click', function() {
-            toggleLayer(areasLayer);
-        });
-
-        L.DomEvent.on(vehicles, 'click', function() {
-            toggleLayer(vehiclesLayer);
-        });
-
-        L.DomEvent.on(fireStations, 'click', function() {
-            toggleLayer(fireStationsLayer);
-        });
-
-        L.DomEvent.on(fires, 'click', function() {
-            toggleLayer(firesLayer);
-        });
-
-        return container;
-    },
-});
-
-const settingsButton = new settingsControl({ position: 'topright' });
-
-settingsButton.addTo(map);
 
 const vehicles_ = {};
 const fires_ = {};
@@ -92,6 +36,88 @@ const icon_fire_station_moving = L.icon({
     iconSize: [62, 62],
     iconAnchor: [31, 31],
 })
+
+const firesLayer = L.layerGroup().addTo(map).setZIndex(10);
+const vehiclesLayer = L.layerGroup().addTo(map).setZIndex(20);
+const fireStationsLayer = L.layerGroup().addTo(map).setZIndex(30);
+const areasLayer = L.layerGroup().addTo(map).setZIndex(40);
+
+const fire_types_truck_possibilities = {}; // { fire_type: [truck_type1, truck_type2],  }
+
+const workArea = L.rectangle([[45.67, 4.76], [45.83, 5.00]], { color: 'blue', weight: 2}).addTo(areasLayer);
+
+const settingsControl = L.Control.extend({
+    onAdd: function() {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+
+        const areas = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
+        areas.innerHTML = '<i class="fas fa-map-marked-alt"></i>'
+        areas.title = 'Afficher/Masquer les zones';
+
+        const vehicles = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
+        vehicles.innerHTML = '<i class="fas fa-truck"></i>'
+        vehicles.title = 'Afficher/Masquer les véhicules';
+
+        const fireStations = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
+        fireStations.innerHTML = '<i class="fas fa-home "></i>'
+        fireStations.title = 'Afficher/Masquer les casernes';
+
+        const fires = L.DomUtil.create('a', 'leaflet-touch leaflet-control-custom', container);
+        fires.innerHTML = '<i class="fas fa-fire"></i>'
+        fires.title = 'Afficher/Masquer les incendies';
+
+        const fireMenu = L.DomUtil.create('div', 'leaflet-touch leaflet-control-custom', container);
+        fireMenu.style.display = 'none';
+
+        const fireType = L.DomUtil.create('select', 'leaflet-touch leaflet-control-custom', fireMenu);
+        fireType.title = 'Choisir le type de feu';
+        const fireTypeOption1 = L.DomUtil.create('option', 'leaflet-touch leaflet-control-custom', fireType);
+        fireTypeOption1.value = 'all';
+        fireTypeOption1.innerHTML = '--Type de feu';
+
+        getFireTypes().then(fireTypes => {
+            fireTypes.forEach(fireType_ => {
+                const fireTypeOption = L.DomUtil.create('option', 'leaflet-touch leaflet-control-custom', fireType);
+                fireTypeOption.value = fireType_;
+                fireTypeOption.innerHTML = fireType_;
+                fireType.appendChild(fireTypeOption);
+            }
+        );
+        });
+
+        L.DomEvent.on(areas, 'click', function() {
+            toggleLayer(areasLayer);
+        });
+
+        L.DomEvent.on(vehicles, 'click', function() {
+            toggleLayer(vehiclesLayer);
+        });
+
+        L.DomEvent.on(fireStations, 'click', function() {
+            toggleLayer(fireStationsLayer);
+        });
+
+        L.DomEvent.on(fires, 'click', function() {
+            toggleButton(fireMenu);
+        });
+
+        L.DomEvent.on(fireType, 'change', function() {
+            const fireType_ = fireType.value;
+            if (fireType_ === 'all') {
+                //TODO: afficher tous les incendies
+            }else {
+                //TODO: afficher les incendies du type fireType_
+            }
+        });
+
+        return container;
+    },
+});
+
+const settingsButton = new settingsControl({ position: 'topright' });
+settingsButton.addTo(map);
+
+
 
 //fonction qui cree la carte
 function createMap(divId) {
@@ -143,6 +169,18 @@ function toggleLayer(layer) {
     }
 }
 
+//fonction qui dit si un bouton est affiché
+function buttonIsDisplayed(button) {
+    return button.style.display !== 'none';
+}
+
+function toggleButton(button) {
+    if (buttonIsDisplayed(button)) {
+        button.style.display = 'none';
+    } else {
+        button.style.display = 'block';
+    }
+}
 
 //fonction qui affiche les stations de pompiers
 function displayFireStations(map) {
@@ -227,18 +265,6 @@ function fireStationExists(id) {
     return fireStations_.hasOwnProperty(id);
 }
 
-//fonction qui vérifie si une station de pompiers est vide
-function isFireStationEmpty(id_station) {
-    //si les coordonnées d'un camion de pompiers sont égales à celles de la caserne alors la caserne est pas vide
-        const fireStation = fireStations_[id_station];
-        for (const id in vehicles_) {
-            const vehicle = vehicles_[id];
-            if (vehicle.lat.toFixed(3) === fireStation.lat.toFixed(3) && vehicle.lon.toFixed(3) === fireStation.lon.toFixed(3)) {
-                return false;
-            }
-        }
-        return true;
-}
 
 //fonction qui retourne les positions des stations de pompiers
 function getFireStationsPosition() {
@@ -250,19 +276,6 @@ function getFireStationsPosition() {
         }
     }
     return positions;
-}
-
-//fonction qui retourne les véhicules présents dans une station
-function getVehiclesInFireStation(id_station) {
-    const vehicules = [];
-    for (const id in vehicles_) {
-        const vehicle = vehicles_[id];
-        //console.log(fireStations_[id_station]);
-        if (vehicle.lat.toFixed(3) === fireStations_[id_station].lat.toFixed(3) && vehicle.lon.toFixed(3) === fireStations_[id_station].lon.toFixed(3)) {
-            vehicules.push(vehicle.id);
-        }
-    }
-    return vehicules;
 }
 
 //fonction qui verifie si un feu est affiché
@@ -335,12 +348,6 @@ function displayFires(map) {
     }
 }
 
-//uptade la popup d'un feu
-function uptadeFirePopup(id, popupContent) {
-    if (fireStationIsDisplayed(id)) {
-        updateMarkerPopup(fireStationsMarkers_[id], popupContent);
-    }
-}
 
 function updateVehicleOptions(fireId) {
     const optionSelected = document.getElementById(`option-${fireId}`).value;
@@ -539,6 +546,7 @@ function refreshData() {
 }
 
 function initMap() {
+    map.doubleClickZoom.disable();
     refreshData();
     toggleLayer(areasLayer);
     displayData(map);

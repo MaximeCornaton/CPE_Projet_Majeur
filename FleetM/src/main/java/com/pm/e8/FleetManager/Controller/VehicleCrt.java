@@ -4,10 +4,12 @@ import com.pm.e8.FleetManager.Service.VehicleRestClientService;
 import com.pm.e8.FleetManager.Service.VehicleService;
 import com.pm.e8.FleetManager.model.Vehicle;
 import com.project.model.dto.Coord;
+import com.project.model.dto.FireType;
 import com.project.model.dto.VehicleDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class VehicleCrt {
@@ -73,4 +75,10 @@ public class VehicleCrt {
     public void addVehicle(@RequestBody VehicleDto vehicleDto){
         vehicleRestClientService.addVehicle(vehicleDto);
     }
+
+    @GetMapping("/vehicle/liquid/type")
+    public Map<FireType,List<VehicleDto>> getFireTypeVehicleMap(){
+        return vehicleService.getFireTypeVehicleMap();
+    }
+
 }
