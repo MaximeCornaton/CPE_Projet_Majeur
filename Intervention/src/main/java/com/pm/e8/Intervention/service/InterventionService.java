@@ -43,7 +43,7 @@ public class InterventionService {
         }
 
         I.setCoordonnees(coordList);
-        iRepo.save(I);
+        System.out.println(iRepo.save(I));
 
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
     }
