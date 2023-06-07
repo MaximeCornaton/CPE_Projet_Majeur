@@ -26,7 +26,7 @@ public class InterventionScheduler {
         List<Intervention> InterventionList = Lists.newArrayList(iRepo.findAll());
         List<FireDto> fList = fireRestClientService.getFires();
         for (Intervention i : InterventionList) {
-            if (i.getStatus().equals("En cours")) {
+            if (i.getStatus().equals(Status.EN_COURS)) {
                 for (FireDto f : fList) {
                     if (f.getId() == i.getIdFire()) {
                         //Rien à faire le feu existe encore
