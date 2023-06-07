@@ -15,7 +15,7 @@ public class MapRestClientService {
     public String getPolyline(Coord startCoord, Coord endCoord) {
         RestTemplate restTemplate = new RestTemplate();
 
-        String baseUrl = "https://api.mapbox.com/directions/v5/mapbox/driving";
+        String baseUrl = "https://api.mapbox.com/directions/v5/mapbox/walking";
         String accessToken = "pk.eyJ1IjoicGF1bGF1YnJ5IiwiYSI6ImNsaWQ0aW9rZTA4ZGIzZXFmaGdzY2Y3OW8ifQ.Hq_kEdnlh-eTK3HbkhWVRQ";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
@@ -48,7 +48,7 @@ public class MapRestClientService {
     public float getDistance(Vehicle vehicle, Coord endCoord, Coord coordFacility){
         RestTemplate restTemplate = new RestTemplate();
 
-        String baseUrl = "https://api.mapbox.com/directions/v5/mapbox/driving";
+        String baseUrl = "https://api.mapbox.com/directions/v5/mapbox/walking";
         String accessToken = "pk.eyJ1IjoicGF1bGF1YnJ5IiwiYSI6ImNsaWQ0aW9rZTA4ZGIzZXFmaGdzY2Y3OW8ifQ.Hq_kEdnlh-eTK3HbkhWVRQ";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
