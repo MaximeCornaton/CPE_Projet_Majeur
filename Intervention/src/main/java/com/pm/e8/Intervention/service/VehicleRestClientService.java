@@ -17,7 +17,7 @@ public class VehicleRestClientService {
 
         public void createIntervention(int vehicleId, Coord coord) {
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8081/vehicle/move/{id}";
+            String url = "http://localhost:8000/fleet-service/vehicle/move/{id}";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<Coord> request = new HttpEntity<>(coord, headers);

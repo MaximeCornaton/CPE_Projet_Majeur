@@ -18,7 +18,7 @@ public class Vehicle {
     private float liquidQuantity;
     private float fuel;
     private int crewMember;
-
+    private int target;
     private boolean inMovement;
     private Integer facilityRefID;
     public Double futureLon;
@@ -41,6 +41,7 @@ public class Vehicle {
         this.crewMember = vehicleDto.getCrewMember();
         this.facilityRefID = vehicleDto.getFacilityRefID();
         this.inMovement = false; //regarder si c'est pas pcq on l'initialise comme ca qu'il est toujours false
+        this.target = -1;
     }
 
     public Integer getId() {
@@ -170,5 +171,13 @@ public class Vehicle {
 
     public boolean isInMovement() {
         return this.inMovement;
+    }
+
+    public void setTarget(int target) {
+        this.target = target;
+    }
+
+    public int getTarget() {
+        return this.target;
     }
 }

@@ -35,7 +35,7 @@ public class InterventionService {
         }
 
         Intervention I = new Intervention(fireId, vehicleId);
-        I.setCoordonnees();
+
         iRepo.save(I);
 
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
