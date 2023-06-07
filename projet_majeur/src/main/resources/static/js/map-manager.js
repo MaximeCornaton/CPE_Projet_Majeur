@@ -1,14 +1,12 @@
 map = createMap('map');
-map.doubleClickZoom.disable();
 
-const firesLayer = L.layerGroup().addTo(map);
-const vehiclesLayer = L.layerGroup().addTo(map);
-const fireStationsLayer = L.layerGroup().addTo(map);
-const areasLayer = L.layerGroup().addTo(map);
-firesLayer.setZIndex(10);
-vehiclesLayer.setZIndex(20);
-fireStationsLayer.setZIndex(30);
-areasLayer.setZIndex(40);
+const firesLayer = L.layerGroup().addTo(map).setZIndex(10);
+const vehiclesLayer = L.layerGroup().addTo(map).setZIndex(20);
+const fireStationsLayer = L.layerGroup().addTo(map).setZIndex(30);
+const areasLayer = L.layerGroup().addTo(map).setZIndex(40);
+
+const fire_types = []
+const fire_type_selected = ""
 
 const workArea = L.rectangle([[45.67, 4.76], [45.83, 5.00]], { color: 'blue', weight: 2}).addTo(areasLayer);
 
@@ -32,6 +30,16 @@ const settingsControl = L.Control.extend({
         fires.innerHTML = '<i class="fas fa-fire"></i>'
         fires.title = 'Afficher/Masquer les incendies';
 
+        const fireMenu = L.DomUtil.create('div', 'leaflet-touch leaflet-control-custom', container);
+        fireMenu.style.display = 'none';
+
+        const fireType = L.DomUtil.create('select', 'leaflet-touch leaflet-control-custom', fireMenu);
+        fireType.title = 'Choisir le type de feu';
+        const fireTypeOption1 = L.DomUtil.create('option', 'leaflet-touch leaflet-control-custom', fireType);
+        fireTypeOption1.value = '0';
+        fireTypeOption1.innerHTML = '--Type de feu';
+
+
         L.DomEvent.on(areas, 'click', function() {
             toggleLayer(areasLayer);
         });
@@ -45,6 +53,10 @@ const settingsControl = L.Control.extend({
         });
 
         L.DomEvent.on(fires, 'click', function() {
+            toggleButton(fireMenu);
+        });
+
+        L.DomEvent.on(fireType, 'change', function() {
             toggleLayer(firesLayer);
         });
 
@@ -53,7 +65,6 @@ const settingsControl = L.Control.extend({
 });
 
 const settingsButton = new settingsControl({ position: 'topright' });
-
 settingsButton.addTo(map);
 
 const vehicles_ = {};
@@ -143,6 +154,24 @@ function toggleLayer(layer) {
     }
 }
 
+//fonction qui dit si un bouton est affiché
+function buttonIsDisplayed(button) {
+    return button.style.display !== 'none';
+}
+
+function toggleButton(button) {
+    if (buttonIsDisplayed(button)) {
+        button.style.display = 'none';
+    } else {
+        button.style.display = 'block';
+    }
+}
+
+//fonction qui dit si un layer est visible
+function layerIsVisible(layer) {
+    return map.hasLayer(layer);
+}
+
 
 //fonction qui affiche les stations de pompiers
 function displayFireStations(map) {
@@ -227,18 +256,6 @@ function fireStationExists(id) {
     return fireStations_.hasOwnProperty(id);
 }
 
-//fonction qui vérifie si une station de pompiers est vide
-function isFireStationEmpty(id_station) {
-    //si les coordonnées d'un camion de pompiers sont égales à celles de la caserne alors la caserne est pas vide
-        const fireStation = fireStations_[id_station];
-        for (const id in vehicles_) {
-            const vehicle = vehicles_[id];
-            if (vehicle.lat.toFixed(3) === fireStation.lat.toFixed(3) && vehicle.lon.toFixed(3) === fireStation.lon.toFixed(3)) {
-                return false;
-            }
-        }
-        return true;
-}
 
 //fonction qui retourne les positions des stations de pompiers
 function getFireStationsPosition() {
@@ -250,19 +267,6 @@ function getFireStationsPosition() {
         }
     }
     return positions;
-}
-
-//fonction qui retourne les véhicules présents dans une station
-function getVehiclesInFireStation(id_station) {
-    const vehicules = [];
-    for (const id in vehicles_) {
-        const vehicle = vehicles_[id];
-        //console.log(fireStations_[id_station]);
-        if (vehicle.lat.toFixed(3) === fireStations_[id_station].lat.toFixed(3) && vehicle.lon.toFixed(3) === fireStations_[id_station].lon.toFixed(3)) {
-            vehicules.push(vehicle.id);
-        }
-    }
-    return vehicules;
 }
 
 //fonction qui verifie si un feu est affiché
@@ -539,6 +543,7 @@ function refreshData() {
 }
 
 function initMap() {
+    map.doubleClickZoom.disable();
     refreshData();
     toggleLayer(areasLayer);
     displayData(map);
