@@ -103,7 +103,7 @@ public class VehicleRestClientService {
         }
     }
 
-    public void deleteVehicle(int id) {
+    public void deleteVehicleRest(int id) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/vehicle/{uuid}/{id}";
         Map<String, String> params = new HashMap<String, String>();

@@ -66,7 +66,7 @@ public class VehicleCrt {
 
     @DeleteMapping("/vehicle/{id}/delete")
     public void deleteVehicle(@PathVariable int id){
-        vehicleRestClientService.deleteVehicle(id);
+        vehicleService.deleteVehicle(id);
     }
 
     @PostMapping("/vehicle/add")

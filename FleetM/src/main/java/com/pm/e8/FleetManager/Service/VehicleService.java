@@ -111,13 +111,6 @@ public class VehicleService {
         vRepo.save(vehicle);
     }
 
-
-
-
-    public void deleteVehicle(int id) {
-        vRepo.deleteById(id);
-    }
-
     public double getDistance(Coord coord1, Coord coord2) {
         return vehicleRestClientService.getDistanceBetweenCoords(coord1, coord2);
     }
@@ -230,5 +223,15 @@ public class VehicleService {
         FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
         Coord coord = new Coord(facilityDto.getLon(), facilityDto.getLat());
         startMoving(vehicleDto.getId(), coord); //commentaire
+    }
+
+    public void deleteVehicle(int id) {
+        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
+        FacilityDto facilityDto = facilityRestClientService.getFacilityDtoById(vehicleDto.getFacilityRefID());
+        backToFacility(vehicleDto,facilityDto);
+        while(vehicleDto.getLat() != facilityDto.getLat() && vehicleDto.getLon() != facilityDto.getLon()){
+
+        }
+        vehicleRestClientService.deleteVehicleRest(id);
     }
 }

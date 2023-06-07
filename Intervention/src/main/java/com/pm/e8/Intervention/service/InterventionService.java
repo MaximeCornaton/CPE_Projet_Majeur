@@ -27,8 +27,17 @@ public class InterventionService {
     public void createIntervention(int fireId, int vehicleId) {
         FireDto fire = fireRestClientService.getFire(fireId);
         LiquidType liquidType = getMostEfficientLiquid(fire.getType());
+
+        for(Intervention i : iRepo.findAll()){
+            if(i.getIdFire() == fireId){
+                return;
+            }
+        }
+
         Intervention I = new Intervention(fireId, vehicleId);
+        I.setCoordonnees();
         iRepo.save(I);
+
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
         vehicleRestClientService.createIntervention(vehicleId, new Coord(fire.getLon(),fire.getLat()));
     }
@@ -57,7 +66,6 @@ public class InterventionService {
                 iRepo.delete(i);
             }
         }
-
     }
 
     /*

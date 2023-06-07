@@ -1,10 +1,9 @@
 package com.pm.e8.Intervention.model;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import com.project.model.dto.Coord;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Intervention {
@@ -13,8 +12,9 @@ public class Intervention {
     private int id;
     private int idFire;
     private int idVehicle;
-    private String status = "En cours";
-
+    private Status status = Status.EN_COURS;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "intervention")
+    private List<Coordonnees> coordonneesList;
 
     public Intervention() {
 
@@ -23,6 +23,13 @@ public class Intervention {
     public Intervention(int fireId, int vehicleId) {
         this.idFire = fireId;
         this.idVehicle = vehicleId;
+    }
+
+    public List<Coordonnees> getCoordonnees() {
+        return coordonneesList;
+    }
+    public void setCoordonnees(List<Coordonnees> coordonnees) {
+        this.coordonneesList = coordonnees;
     }
 
     protected int getId() {
@@ -49,11 +56,11 @@ public class Intervention {
         this.idVehicle = idVehicle;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }
