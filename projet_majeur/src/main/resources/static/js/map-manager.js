@@ -1,5 +1,42 @@
 map = createMap('map');
 
+const vehicles_ = {};
+const fires_ = {};
+const fireStations_ = {};
+const vehiclesMarkers_ = {};
+const firesMarkers_ = {};
+const fireStationsMarkers_ = {};
+
+const icon_fire_truck = L.icon({
+    iconUrl: '../img/icons/fire-truck.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
+const icon_fire_truck_moving = L.icon({
+    iconUrl: '../img/icons/fire-truck.gif',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+});
+
+const icon_fire = L.icon({
+    iconUrl: '../img/icons/fire.gif',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
+const icon_fire_station = L.icon({
+    iconUrl: '../img/icons/fire-station.png',
+    iconSize: [46, 46],
+    iconAnchor: [23, 23],
+});
+
+const icon_fire_station_moving = L.icon({
+    iconUrl: '../img/icons/fire-station.gif',
+    iconSize: [62, 62],
+    iconAnchor: [31, 31],
+})
+
 const firesLayer = L.layerGroup().addTo(map).setZIndex(10);
 const vehiclesLayer = L.layerGroup().addTo(map).setZIndex(20);
 const fireStationsLayer = L.layerGroup().addTo(map).setZIndex(30);
@@ -67,9 +104,9 @@ const settingsControl = L.Control.extend({
         L.DomEvent.on(fireType, 'change', function() {
             const fireType_ = fireType.value;
             if (fireType_ === 'all') {
-                //afficher tous les incendies
+                //TODO: afficher tous les incendies
             }else {
-                //afficher les incendies du type fireType_
+                //TODO: afficher les incendies du type fireType_
             }
         });
 
@@ -80,42 +117,7 @@ const settingsControl = L.Control.extend({
 const settingsButton = new settingsControl({ position: 'topright' });
 settingsButton.addTo(map);
 
-const vehicles_ = {};
-const fires_ = {};
-const fireStations_ = {};
-const vehiclesMarkers_ = {};
-const firesMarkers_ = {};
-const fireStationsMarkers_ = {};
 
-const icon_fire_truck = L.icon({
-    iconUrl: '../img/icons/fire-truck.png',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-});
-
-const icon_fire_truck_moving = L.icon({
-    iconUrl: '../img/icons/fire-truck.gif',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-});
-
-const icon_fire = L.icon({
-    iconUrl: '../img/icons/fire.gif',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-});
-
-const icon_fire_station = L.icon({
-    iconUrl: '../img/icons/fire-station.png',
-    iconSize: [46, 46],
-    iconAnchor: [23, 23],
-});
-
-const icon_fire_station_moving = L.icon({
-    iconUrl: '../img/icons/fire-station.gif',
-    iconSize: [62, 62],
-    iconAnchor: [31, 31],
-})
 
 //fonction qui cree la carte
 function createMap(divId) {
@@ -179,12 +181,6 @@ function toggleButton(button) {
         button.style.display = 'block';
     }
 }
-
-//fonction qui dit si un layer est visible
-function layerIsVisible(layer) {
-    return map.hasLayer(layer);
-}
-
 
 //fonction qui affiche les stations de pompiers
 function displayFireStations(map) {
@@ -352,12 +348,6 @@ function displayFires(map) {
     }
 }
 
-//uptade la popup d'un feu
-function uptadeFirePopup(id, popupContent) {
-    if (fireStationIsDisplayed(id)) {
-        updateMarkerPopup(fireStationsMarkers_[id], popupContent);
-    }
-}
 
 function updateVehicleOptions(fireId) {
     const optionSelected = document.getElementById(`option-${fireId}`).value;
