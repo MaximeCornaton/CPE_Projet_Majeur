@@ -135,7 +135,6 @@ function updateMarkerPopup(marker, popupContent) {
     marker.setPopupContent(popupContent);
 }
 
-
 function toggleLayer(layer) {
     if (map.hasLayer(layer)) {
         map.removeLayer(layer);
@@ -143,8 +142,6 @@ function toggleLayer(layer) {
         layer.addTo(map);
     }
 }
-
-
 
 
 //fonction qui affiche les stations de pompiers
@@ -493,8 +490,6 @@ function undisplayVehicle(id) {
 }
 
 
-
-
 //fonction qui vérifie si un camion est en mouvement
 function isVehicleMoving(id) {
     return vehiclesMarkers_[id].getLatLng().lat !== vehicles_[id].lat || vehiclesMarkers_[id].getLatLng().lng !== vehicles_[id].lon;
@@ -547,7 +542,6 @@ function initMap() {
     refreshData();
     toggleLayer(areasLayer);
     displayData(map);
-
 }
 
 setInterval(function() {
@@ -557,6 +551,5 @@ setInterval(function() {
 setInterval(function() {
     refreshData();
 }, 1000);
-
 
 initMap();
