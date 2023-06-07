@@ -31,6 +31,16 @@ public class InterventionCrt {
         interventionService.cleanInter();
     }
 
+    @GetMapping("/intervention/done")
+    public List<Intervention> doneIntervention(){
+        return interventionService.doneIntervention();
+    }
+
+    @GetMapping("/intervention/inProgress")
+    public List<Intervention> inProgressIntervention(){
+        return interventionService.inProgressIntervention();
+    }
+
 /*
     @PostMapping("/interventions")
     public void createInterventions(@RequestParam List<Integer> fireIds, List<Integer> vehicleIds){
