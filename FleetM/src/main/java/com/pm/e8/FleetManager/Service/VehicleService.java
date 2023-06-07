@@ -186,7 +186,6 @@ public class VehicleService {
                     vehicle.setTarget(-1);
                     vRepo.save(vehicle);
                 }
-
             }
         }
     }

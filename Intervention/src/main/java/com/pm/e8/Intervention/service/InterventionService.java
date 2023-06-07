@@ -41,8 +41,8 @@ public class InterventionService {
                 return;
             }
         }
-        I.setCoordonnees(coordList);
 
+        I.setCoordonnees(coordList);
         iRepo.save(I);
 
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
