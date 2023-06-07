@@ -201,8 +201,12 @@ public class VehicleService {
         while (!found){
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
-                fireAvailable.add(fireDto.getId());
-                found = true;
+                if (fireRestClientService.getFireDtoById(id).equals("E_Electric")){
+                    id++;
+                }else {
+                    fireAvailable.add(fireDto.getId());
+                    found = true;
+                }
             }else if (!fireAvailable.contains(fireDto.getId())){
                 fireAvailable.add(fireDto.getId());
                 found = true;
@@ -225,8 +229,10 @@ public class VehicleService {
     }
 
     public void clearFireAvailable(){
-        for (int i=0; i<fireAvailable.size(); i++){
-            if (fireRestClientService.getFireDtoById(fireAvailable.get(i)) == null){
+        for (int i=0; i<fireAvailable.size(); i++) {
+            if (fireRestClientService.getFireDtoById(fireAvailable.get(i)) == null) {
+                fireAvailable.remove(i);
+            } else if (fireRestClientService.getFireDtoById(fireAvailable.get(i)).getType().equals("E_ELECTRIC")) {
                 fireAvailable.remove(i);
             }
         }
