@@ -112,6 +112,8 @@ public class VehicleService {
     }
 
 
+
+
     public void deleteVehicle(int id) {
         vRepo.deleteById(id);
     }
@@ -178,13 +180,9 @@ public class VehicleService {
     }
 
     private void findFire(VehicleDto vehicleDto) {
-        List<FireDto> fireDtoList;
-        fireDtoList = fireRestClientService.getFireAround(vehicleDto.getId(),1000000);
+        List<FireDto> fireDtoList = fireRestClientService.getAllFires();
         if(fireDtoList.isEmpty()){
-            fireDtoList = fireRestClientService.getFireAround(vehicleDto.getId(),500);
-            if (fireDtoList.isEmpty()){
-                return;
-            }
+            return;
         }
         int id = 0;
         boolean found = false;

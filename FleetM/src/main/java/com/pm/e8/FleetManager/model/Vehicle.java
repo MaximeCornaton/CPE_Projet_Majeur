@@ -169,6 +169,6 @@ public class Vehicle {
     }
 
     public boolean isInMovement() {
-        return inMovement;
+        return this.inMovement;
     }
 }
