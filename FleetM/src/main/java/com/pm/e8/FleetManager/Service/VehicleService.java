@@ -102,8 +102,6 @@ public class VehicleService {
         if(!hasEnoughFuel(vehicle,coord)){
             throw new NotEnoughFuelException("Not enough fuel");
         }
-        vehicle.setCoordonnees(new ArrayList<>());
-        vRepo.save(vehicle);
         List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> futurCoordList = new ArrayList<>();
         for(Coord c : coordList){
@@ -188,7 +186,6 @@ public class VehicleService {
                     vehicle.setTarget(-1);
                     vRepo.save(vehicle);
                 }
-
             }
         }
     }
@@ -203,8 +200,20 @@ public class VehicleService {
         while (!found){
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
+<<<<<<< HEAD
                 fireAvailable.add(fireDto.getId());
                 found = true;
+=======
+                try {
+                    if (fireRestClientService.getFireDtoById(fireDto.getId()).getType().equals("E_Electric")){
+                        found = true;
+                    }
+                }
+                catch (Exception e){
+                    id++;
+                }
+
+>>>>>>> b040ac2140d2322ca7f62b9ea9e76f3724718bf5
             }else if (!fireAvailable.contains(fireDto.getId())){
                 fireAvailable.add(fireDto.getId());
                 found = true;
