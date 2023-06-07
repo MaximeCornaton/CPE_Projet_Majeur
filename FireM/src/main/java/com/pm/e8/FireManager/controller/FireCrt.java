@@ -44,8 +44,8 @@ public class FireCrt {
     }
 
     @GetMapping("/types")
-    public List<String> getTypes(){
-        return Collections.singletonList(fServ.getTypes());
+    public String getTypes(){
+        return fServ.getTypes();
     }
 
 
