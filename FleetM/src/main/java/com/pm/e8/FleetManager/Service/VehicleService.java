@@ -175,6 +175,17 @@ public class VehicleService {
                 vehicle.setInMovement(false);
                 System.out.println("Je cherche un feu");
                 this.findFire(vehicleDto);
+            }else if (vehicle.getTarget() == -1){
+                findFire(vehicleDto);
+                System.out.println(vehicle.getId() + " à trouvé un feu: le " + vehicle.getTarget());
+            } else if (vehicle.getTarget() != -1) {
+                Exception e = new Exception();
+                if (fireRestClientService.getFireDtoById(vehicle.getTarget()) == null){
+                    System.out.println("Le feu sru lequel était " + vehicle.getId() + " n'existe plus");
+                    vehicle.setTarget(-1);
+                    vRepo.save(vehicle);
+                }
+
             }
         }
     }
@@ -198,9 +209,35 @@ public class VehicleService {
                 id++;
             }
         }
-        FireDto fireDto = fireRestClientService.getFireDtoById(fireAvailable.get(id));
+        Vehicle vehicle = null;
+        for (Vehicle vehicleC: currentListVehicle) {
+            if (vehicleC.getId() == vehicleDto.getId()){
+                vehicle = vehicleC;
+            }
+        }
+        FireDto fireDto = fireDtoList.get(id);
+        if (vehicle != null) {
+            vehicle.setTarget(fireDto.getId());
+        }
         System.out.println(vehicleDto.getId() + " va au feu: " + fireDto.getId());
         this.startMoving(vehicleDto.getId(),new Coord(fireDto.getLon(),fireDto.getLat()));
+    }
+
+    public void clearFireAvailable(){
+        for (int i=0; i<fireAvailable.size(); i++){
+            if (fireRestClientService.getFireDtoById(fireAvailable.get(i)) == null){
+                fireAvailable.remove(i);
+            }
+        }
+        for (Vehicle vehicle : currentListVehicle){
+            if (vehicle.getTarget() != -1){
+                for (int i=0; i<fireAvailable.size(); i++){
+                    if (fireRestClientService.getFireDtoById(fireAvailable.get(i)) == null){
+                        fireAvailable.remove(i);
+                    }
+                }
+            }
+        }
     }
 
     private void backToFacility(VehicleDto vehicleDto, FacilityDto facilityDto) {
