@@ -203,12 +203,8 @@ public class VehicleService {
         while (!found){
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
-                if (fireRestClientService.getFireDtoById(id).equals("E_Electric")){
-                    id++;
-                }else {
-                    fireAvailable.add(fireDto.getId());
-                    found = true;
-                }
+                fireAvailable.add(fireDto.getId());
+                found = true;
             }else if (!fireAvailable.contains(fireDto.getId())){
                 fireAvailable.add(fireDto.getId());
                 found = true;
