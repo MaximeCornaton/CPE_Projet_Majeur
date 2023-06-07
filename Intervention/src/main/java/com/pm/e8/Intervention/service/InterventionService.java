@@ -78,6 +78,16 @@ public class InterventionService {
         }
     }
 
+    public List<Intervention> doneIntervention() {
+        return iRepo.findAllByStatus(Status.TERMINEE);
+    }
+
+    public List<Intervention> inProgressIntervention() {
+        return iRepo.findAllByStatus(Status.EN_COURS);
+    }
+
+
+
     /*
     public void createInterventions(List<Integer> fireIds, List<Integer> vehicleIds) {
         int tailleMin = Math.min(fireIds.size(), vehicleIds.size());
