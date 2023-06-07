@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class StaticCrt {
 
-    @GetMapping({"/", "/index"})
+    /*@GetMapping({"/", "/index"})
     public String index(){
         return "index.html";
-    }
+    }*/
 }
