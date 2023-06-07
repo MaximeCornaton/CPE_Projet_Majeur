@@ -92,7 +92,7 @@ function createTableWithDelete(promise) {
         const keys = Object.keys(json[0]);
 
         // Ajoutez une colonne supplémentaire pour le bouton de suppression
-        keys.push('Supprimer');
+        keys.push('action');
 
         // Parcourez les clés et ajoutez-les en tant que colonnes d'en-tête
         keys.forEach(key => {
@@ -103,6 +103,7 @@ function createTableWithDelete(promise) {
             headerRow.appendChild(headerCell);
             footerRow.appendChild(footerCell);
         });
+
 
         // Ajoutez l'en-tête au tableau
         tableElement.appendChild(tableHeader);
@@ -118,10 +119,13 @@ function createTableWithDelete(promise) {
             // Parcourez les clés et ajoutez les valeurs correspondantes en tant que cellules de ligne
             keys.forEach(key => {
                 const cell = document.createElement('td');
-                if (key === 'Supprimer') {
+                if (key === 'action') {
                     // Créez un bouton de suppression pour la colonne Supprimer
                     const deleteButton = createDeleteButton(obj.id);
+
                     cell.appendChild(deleteButton);
+                    cell.style.textAlign = 'center';
+                    //cell.style.border = 'none';
                 } else {
                     cell.textContent = obj[key];
                 }
