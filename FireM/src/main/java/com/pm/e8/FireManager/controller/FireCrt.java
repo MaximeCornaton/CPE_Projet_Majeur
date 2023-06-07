@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pm.e8.FireManager.service.FireService;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -44,7 +45,7 @@ public class FireCrt {
 
     @GetMapping("/types")
     public List<String> getTypes(){
-        return fServ.getTypes();
+        return Collections.singletonList(fServ.getTypes());
     }
 
 
