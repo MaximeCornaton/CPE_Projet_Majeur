@@ -89,10 +89,14 @@ function updateMarkerPopup(marker, popupContent) {
 
 //fonction qui affiche les stations de pompiers
 function displayFireStations(map) {
+    const existingFireStations = []; // Stocker les identifiants des stations de pompiers existantes
+
     // Ajouter ou mettre à jour les marqueurs des nouvelles stations
     for (const id in fireStations_) {
         if (fireStationExists(id)) {
                 const fireStation = fireStations_[id];
+                existingFireStations.push(id); // Ajouter l'identifiant à existingFireStations
+
             if (!fireStationIsDisplayed(id)) {
                 const marker = createMarker(fireStationsLayer, fireStation.lat, fireStation.lon, icon_fire_station);
 
@@ -146,7 +150,7 @@ function displayFireStations(map) {
 
     // Supprimer les marqueurs des stations qui n'existent plus
     for (const id in fireStationsMarkers_) {
-        if (!fireStationExists(id)) {
+        if (!existingFireStations.includes(id)) {
             undisplayFireStation(id);
         }
     }
@@ -232,10 +236,13 @@ function getFireStationVehicles(id_station) {
 
 //fonction qui affiche les feux
 function displayFires(map) {
+    const existingFires = []; // Stocker les identifiants des stations de pompiers existantes
+
     // Ajouter ou mettre à jour les marqueurs des nouveaux feux
     for (const id in fires_) {
         if (fireExists(id)) {
             const fire = fires_[id];
+            existingFires.push(id);
             if (!fireIsDisplayed(id)) {
                 const marker = createMarker(firesLayer, fire.lat, fire.lon, icon_fire);
 
@@ -265,7 +272,7 @@ function displayFires(map) {
 
     // Supprimer les marqueurs des feux qui n'existent plus
     for (const id in firesMarkers_) {
-        if (!fireExists(id)) {
+        if (!existingFires.includes(id)) {
             undisplayFire(id);
         }
     }
