@@ -200,10 +200,8 @@ public class VehicleService {
         while (!found){
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
-<<<<<<< HEAD
                 fireAvailable.add(fireDto.getId());
                 found = true;
-=======
                 try {
                     if (fireRestClientService.getFireDtoById(fireDto.getId()).getType().equals("E_Electric")){
                         found = true;
@@ -213,7 +211,6 @@ public class VehicleService {
                     id++;
                 }
 
->>>>>>> b040ac2140d2322ca7f62b9ea9e76f3724718bf5
             }else if (!fireAvailable.contains(fireDto.getId())){
                 fireAvailable.add(fireDto.getId());
                 found = true;
