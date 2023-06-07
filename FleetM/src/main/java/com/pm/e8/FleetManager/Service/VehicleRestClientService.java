@@ -105,20 +105,9 @@ public class VehicleRestClientService {
 
     public void deleteVehicleRest(int id) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://vps.cpe-sn.fr:8081/vehicle/{uuid}/{id}";
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("uuid", teamUuid);
-        params.put("id", String.valueOf(id));
-        ResponseEntity<VehicleDto> response = null;
-        try {
-            restTemplate.delete(url, params);
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            System.out.println("Error");
-            System.out.println(e.getStatusCode());
-            System.out.println(e.getResponseBodyAsString());
-        } catch (RestClientException e) {
-            System.out.println(e.getMessage());
-        }
+        String url = "http://vps.cpe-sn.fr:8081/{id}";
+        restTemplate.delete(url, id);
+
     }
 
     public VehicleDto addVehicle(VehicleDto vDTO){
