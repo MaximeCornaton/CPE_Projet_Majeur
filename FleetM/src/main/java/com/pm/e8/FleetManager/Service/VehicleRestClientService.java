@@ -143,4 +143,5 @@ public class VehicleRestClientService {
         assert response != null;
         return response.getBody();
     }
+
 }

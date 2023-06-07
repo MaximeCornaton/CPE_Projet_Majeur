@@ -3,17 +3,13 @@ package com.pm.e8.FireManager.service;
 import com.google.common.collect.Lists;
 import com.pm.e8.FireManager.model.Fire;
 import com.pm.e8.FireManager.repository.FireRepository;
-import com.project.model.dto.Coord;
-import com.project.model.dto.FireDto;
-import com.project.model.dto.VehicleDto;
+import com.project.model.dto.*;
 import org.ejml.data.FMatrixSparseTriplet;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FireService {
@@ -114,4 +110,6 @@ public class FireService {
         typeList.add("A");
         return typeList;
     }
+
+
 }

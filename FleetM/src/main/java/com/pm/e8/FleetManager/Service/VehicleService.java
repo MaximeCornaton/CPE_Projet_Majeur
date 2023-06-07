@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class VehicleService {
@@ -288,5 +285,21 @@ public class VehicleService {
 
         }
         vehicleRestClientService.deleteVehicleRest(id);
+    }
+
+    public Map<FireType, List<VehicleDto>> getFireTypeVehicleMap() {
+        Map<FireType,List<VehicleDto>> fireTypeVehicleMap = new HashMap<>();
+        List<VehicleDto> vehicleDtoList = this.getTeamVehicles();
+
+        for(FireType fireType : FireType.values()){
+            fireTypeVehicleMap.put(fireType,new ArrayList<>());
+            for(VehicleDto v:vehicleDtoList){
+                float efficiency = v.getLiquidType().getEfficiency(String.valueOf(fireType));
+                if(efficiency > 0){
+                    fireTypeVehicleMap.get(fireType).add(v);
+                }
+            }
+        }
+        return fireTypeVehicleMap;
     }
 }
