@@ -176,3 +176,16 @@ function tableFireStation() {
 
     updateTable();
 }
+
+function tableInterventions() {
+    createTable(getInterventions());
+
+    function updateTable() {
+        createTable(getInterventions());
+    }
+
+    // Actualiser le tableau toutes les secondes
+    setInterval(updateTable, 1000);
+
+    updateTable();
+}

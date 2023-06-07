@@ -89,3 +89,33 @@ function postAddVehicle(lon, lat, type, liquidType, liquidQuantity, fuel, crewMe
     })
     console.log("camion ajoute");
 }
+
+//fonction pour recuperer les interventions
+function getInterventions() {
+    return fetch('http://localhost:8000/inter-service/interventions', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+}
+
+//fonction pour recuperer les interventions terminees
+function getInterventionsDone() {
+    return fetch('http://localhost:8000/inter-service/interventions/done', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+}
+
+//fonction pour recuperer les interventions en cours
+function getInterventionsInProgress() {
+    return fetch('http://localhost:8000/inter-service/interventions/inProgress', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+}

@@ -10,11 +10,6 @@ function loadFragment(fragmentElement, fragmentName) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             let fragmentContent = xhr.responseText;
 
-            // Si le fragment est la balise <head>, on remplace le titre de la page
-            if (fragmentName === "head") {
-                document.title = fragmentElement.getAttribute('data-title');
-            }
-
             // Remplacer l'élément <fragment> par le contenu récupéré
             fragmentElement.outerHTML = fragmentContent;
 
