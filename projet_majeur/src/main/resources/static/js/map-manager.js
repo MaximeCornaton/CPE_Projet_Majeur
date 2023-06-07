@@ -44,8 +44,8 @@ const areasLayer = L.layerGroup().addTo(map).setZIndex(40);
 
 const fire_types_truck_possibilities = {}; // { fire_type: [truck_type1, truck_type2],  }
 let fire_type = 'all';
-let fire_intensity = 50;
-let fire_range = 50;
+let fire_intensity = 10;
+let fire_range = 10;
 
 const workArea = L.rectangle([[45.67, 4.76], [45.83, 5.00]], { color: 'blue', weight: 2}).addTo(areasLayer);
 
@@ -70,7 +70,7 @@ const settingsControl = L.Control.extend({
         fires.title = 'Afficher/Masquer les incendies';
 
         const fireMenu = L.DomUtil.create('div', 'leaflet-touch leaflet-control-custom', container);
-        fireMenu.style.display = 'none';
+
         fireMenu.style.position = 'absolute';
         fireMenu.style.right = '0';
         fireMenu.style.backgroundColor = 'white';
@@ -80,6 +80,7 @@ const settingsControl = L.Control.extend({
         fireMenu.style.width = '200px';
         fireMenu.style.display = 'flex';
         fireMenu.style.flexDirection = 'column';
+        fireMenu.style.display = 'none';
 
         const fireType = L.DomUtil.create('select', 'leaflet-touch leaflet-control-custom', fireMenu);
         fireType.title = 'Choisir le type de feu';
