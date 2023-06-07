@@ -6,6 +6,7 @@ import com.pm.e8.FireManager.repository.FireRepository;
 import com.project.model.dto.Coord;
 import com.project.model.dto.FireDto;
 import com.project.model.dto.VehicleDto;
+import org.ejml.data.FMatrixSparseTriplet;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -90,4 +91,15 @@ public class FireService {
         return restTemplate.getForObject(builder.toUriString(), Double.class);
     }
 
+    public List<FireDto> getTypeFires(String type) {
+        List<Fire> fList = getFireList();
+        List<FireDto> typeFires = new ArrayList<>();
+        for(Fire f : fList){
+            FireDto fireDto = FireRestClientService.getFireDto(f.getId());
+            if(f.getType().equals(type)){
+                typeFires.add(fireDto);
+            }
+        }
+        return typeFires;
+    }
 }
