@@ -59,28 +59,15 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Interventions</h1>
-                <p class="mb-4">On retrouve ici la liste des interventions effectuées/en cours/à venir.</p>
+                <h1 class="h3 mb-2 text-gray-800">Feux</h1>
+                <p class="mb-4">On retrouve ici la liste des feux dans la ville.</p>
 
                 <!-- Fleet Table -->
                 <div class="card shadow mb-4 animated--grow-in">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Tableau des interventions</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Tableau des feux</h6>
                     </div>
                     <div class="card-body">
-                        <div class="dropdown mb-4">
-                            <button class="btn btn-primary dropdown-toggle" type="button"
-                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                Filtrer
-                            </button>
-                            <div class="dropdown-menu animated--fade-in"
-                                 aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item filter" href="#">Toutes</a>
-                                <a class="dropdown-item filter" href="#">En cours</a>
-                                <a class="dropdown-item filter" href="#">Terminées</a>
-                            </div>
-                        </div>
 
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable">
@@ -114,7 +101,7 @@
 
 <script>
     $(document).ready(function() {
-        tableInterventions();
+        tableFires();
     });
 </script>
 
