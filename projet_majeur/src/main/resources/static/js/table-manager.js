@@ -80,11 +80,19 @@ function tableVehicles() {
 // Fonction pour créer le tableau avec le bouton de suppression
     function createTableWithDelete(promise) {
         promise.then(json => {
-            // Obtenez une référence à l'élément de tableau dans votre page HTML
             const tableElement = document.getElementById('dataTable');
             tableElement.innerHTML = '';
 
-            // Créez l'en-tête du tableau
+            if (json.length === 0) {
+                const emptyRow = document.createElement('tr');
+                const emptyCell = document.createElement('td');
+                emptyCell.setAttribute('colspan', '4');
+                emptyCell.textContent = 'Tableau vide';
+                emptyRow.appendChild(emptyCell);
+                tableElement.appendChild(emptyRow);
+                return;
+            }
+
             const tableHeader = document.createElement('thead');
             const headerRow = document.createElement('tr');
             const tableFooter = document.createElement('tfoot');
@@ -92,13 +100,9 @@ function tableVehicles() {
             tableHeader.appendChild(headerRow);
             tableFooter.appendChild(footerRow);
 
-            // Obtenez les clés de l'objet JSON
             const keys = Object.keys(json[0]);
-
-            // Ajoutez une colonne supplémentaire pour le bouton de suppression
             keys.push('action');
 
-            // Parcourez les clés et ajoutez-les en tant que colonnes d'en-tête
             keys.forEach(key => {
                 const headerCell = document.createElement('th');
                 const footerCell = document.createElement('th');
@@ -108,39 +112,27 @@ function tableVehicles() {
                 footerRow.appendChild(footerCell);
             });
 
-
-            // Ajoutez l'en-tête au tableau
             tableElement.appendChild(tableHeader);
             tableElement.appendChild(tableFooter);
 
-            // Créez le corps du tableau
             const tableBody = document.createElement('tbody');
 
-            // Parcourez les objets JSON et créez une ligne pour chaque objet
             json.forEach(obj => {
                 const row = document.createElement('tr');
-
-                // Parcourez les clés et ajoutez les valeurs correspondantes en tant que cellules de ligne
                 keys.forEach(key => {
                     const cell = document.createElement('td');
                     if (key === 'action') {
-                        // Créez un bouton de suppression pour la colonne Supprimer
                         const deleteButton = createDeleteButton(obj.id);
-
                         cell.appendChild(deleteButton);
                         cell.style.textAlign = 'center';
-                        //cell.style.border = 'none';
                     } else {
                         cell.textContent = obj[key];
                     }
                     row.appendChild(cell);
                 });
-
-                // Ajoutez la ligne au corps du tableau
                 tableBody.appendChild(row);
             });
 
-            // Ajoutez le corps du tableau au tableau
             tableElement.appendChild(tableBody);
         });
     }
@@ -180,11 +172,11 @@ function tableFireStation() {
 }
 
 function tableInterventions() {
-    const filter = 'all';
+    let filter = 'all';
     function getInterventionsWithFilter(filter) {
         if(filter === 'all') {
             return getInterventions();
-        } else if(filter === 'inProgress') {
+        } else if(filter === 'in_progress') {
             return getInterventionsInProgress();
         } else if(filter === 'finished') {
             return getInterventionsDone();
@@ -196,8 +188,50 @@ function tableInterventions() {
     }
 
     function createTable(promises) {
+        const table = document.getElementById('dataTable');
+        table.innerHTML = '';
+        const thead = document.createElement('thead');
+        const tfoot = document.createElement('tfoot');
+        const tbody = document.createElement('tbody');
 
+        // Create table headers
+        const headers = ['idFire', 'idVehicle', 'status'];
+        const headerRow = document.createElement('tr');
+        const footerRow = document.createElement('tr');
+        headers.forEach((headerText) => {
+            const header = document.createElement('th');
+            const footer = document.createElement('th');
+            header.appendChild(document.createTextNode(headerText));
+            footer.appendChild(document.createTextNode(headerText));
+            headerRow.appendChild(header);
+            footerRow.appendChild(footer);
+        });
+        thead.appendChild(headerRow);
+        tfoot.appendChild(footerRow);
+
+        // Create table rows with data
+        promises.then((promise) => {
+            promise.forEach((intervention) => {
+                const row = document.createElement('tr');
+                const idFire = document.createElement('td');
+                const idVehicle = document.createElement('td');
+                const status = document.createElement('td');
+                idFire.appendChild(document.createTextNode(intervention.idFire));
+                idVehicle.appendChild(document.createTextNode(intervention.idVehicle));
+                status.appendChild(document.createTextNode(intervention.status));
+                row.appendChild(idFire);
+                row.appendChild(idVehicle);
+                row.appendChild(status);
+                tbody.appendChild(row);
+            });
+        });
+
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        table.appendChild(tfoot);
     }
+
 
     setInterval(function() {
         updateTable(filter);
@@ -208,7 +242,7 @@ function tableInterventions() {
     const filters = document.querySelectorAll('.filter');
     filters.forEach(filterElement => {
         filterElement.addEventListener('click', function(event) {
-            const filter = event.target.getAttribute('data-filter');
+            filter = event.target.getAttribute('data-filter');
             updateTable(filter);
         });
     });
