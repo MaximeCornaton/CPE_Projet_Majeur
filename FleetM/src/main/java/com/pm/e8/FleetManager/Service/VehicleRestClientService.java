@@ -105,8 +105,8 @@ public class VehicleRestClientService {
 
     public void deleteVehicleRest(int id) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://vps.cpe-sn.fr:8081/{id}";
-        restTemplate.delete(url, id);
+        String url = "http://vps.cpe-sn.fr:8081/vehicle/{uuid}/{id}";
+        restTemplate.delete(url,teamUuid ,id);
 
     }
 

@@ -278,7 +278,6 @@ public class VehicleService {
     }
 
     public void deleteVehicle(int id) {
-        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
         vehicleRestClientService.deleteVehicleRest(id);
     }
 
