@@ -158,8 +158,10 @@ public class VehicleService {
     public void checkAllVehicles(){
         setCurrentListVehicle();
         for(Vehicle vehicle : currentListVehicle){
+
             VehicleDto vehicleDto = this.getVehicleById(vehicle.getId());
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
+
             if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat() && !vehicle.isInMovement()){ //il faut trouver un moyen de regarder s'il est en mouvement, sinon il recrée une list de coordonnées qui sera re exéxutée apres son premier trahet
                System.out.println(vehicle.getId() + " retourne à la caserne et n'est pas en mouvement: " + vehicle.isInMovement());
                 this.backToFacility(vehicleDto,facilityDto);
@@ -222,6 +224,7 @@ public class VehicleService {
         FireDto fireDto = fireDtoList.get(id);
         if (vehicle != null) {
             vehicle.setTarget(fireDto.getId());
+            vRepo.save(vehicle);
         }
         System.out.println(vehicleDto.getId() + " va au feu: " + fireDto.getId());
         this.startMoving(vehicleDto.getId(),new Coord(fireDto.getLon(),fireDto.getLat()));
@@ -277,11 +280,6 @@ public class VehicleService {
 
     public void deleteVehicle(int id) {
         VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
-        FacilityDto facilityDto = facilityRestClientService.getFacilityDtoById(vehicleDto.getFacilityRefID());
-        backToFacility(vehicleDto,facilityDto);
-        while(vehicleDto.getLat() != facilityDto.getLat() && vehicleDto.getLon() != facilityDto.getLon()){
-
-        }
         vehicleRestClientService.deleteVehicleRest(id);
     }
 
