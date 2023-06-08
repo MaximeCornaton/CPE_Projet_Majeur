@@ -107,7 +107,7 @@ public class VehicleService {
         lastCoord.setVehicle(vehicle);
         futurCoordList.add(lastCoord);
 
-        interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget() , coordList);
+        interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget());
 
         vehicle.setCoordonnees(futurCoordList);
         vehicle.setInMovement(true);

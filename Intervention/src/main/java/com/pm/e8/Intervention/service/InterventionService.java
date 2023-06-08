@@ -32,9 +32,10 @@ public class InterventionService {
         this.mapRestClientService = mapRestClientService;
     }
 
-    public void AutoIntervention(int fireId, int vehicleId, List<Coordonnees> coordList) {
+    public void AutoIntervention(int fireId, int vehicleId) {
         FireDto fire = fireRestClientService.getFire(fireId);
-        LiquidType liquidType = LiquidType.ALL;
+        LiquidType liquidType = getMostEfficientLiquid(fire.getType());
+
         try {
             liquidType = getMostEfficientLiquid(fire.getType());
             System.out.println(liquidType);
@@ -49,26 +50,16 @@ public class InterventionService {
             }
         }
 
-        I.setCoordonnees(coordList);
+        I.setCoordonnees(getTrajetList(vehicleId, fireId));
         System.out.println(iRepo.save(I));
 
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
     }
 
     public void createIntervention(int fireId, int vehicleId) {
-
         FireDto fire = fireRestClientService.getFire(fireId);
         LiquidType liquidType = getMostEfficientLiquid(fire.getType());
-        VehicleDto vehicle = vehicleRestClientService.getVehicle(vehicleId);
 
-        Coord coord = new Coord(fire.getLon(),fire.getLat());
-        String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
-        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
-        List<Coordonnees> coordonneesList = new ArrayList<>();
-
-        for(Coord c : coordList){
-            coordonneesList.add(new Coordonnees(c.getLon(),c.getLat()));
-        }
         for(Intervention i : iRepo.findAll()){
             if(i.getIdFire() == fireId || fireId == -1){
                 return;
@@ -76,7 +67,7 @@ public class InterventionService {
         }
 
         Intervention I = new Intervention(fireId, vehicleId);
-        I.setCoordonnees(coordonneesList);
+        I.setCoordonnees(getTrajetList(vehicleId, fireId));
 
         System.out.println(iRepo.save(I));
         System.out.println(iRepo.findAll());
@@ -117,6 +108,22 @@ public class InterventionService {
 
     public List<Intervention> inProgressIntervention() {
         return iRepo.findAllByStatus(Status.EN_COURS);
+    }
+
+    private List<Coordonnees> getTrajetList(int vehicleId, int fireId) {
+        FireDto fire = fireRestClientService.getFire(fireId);
+
+        VehicleDto vehicle = vehicleRestClientService.getVehicle(vehicleId);
+
+        Coord coord = new Coord(fire.getLon(),fire.getLat());
+        String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
+        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
+        List<Coordonnees> coordonneesList = new ArrayList<>();
+
+        for(Coord c : coordList){
+            coordonneesList.add(new Coordonnees(c.getLon(),c.getLat()));
+        }
+        return coordonneesList;
     }
 
 
