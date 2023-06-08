@@ -49,7 +49,7 @@ public class VehicleRestClientService {
         return vehicleDto;
     }
 
-    public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
+    public void moveVehicle(int id, Coord coord) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/vehicle/move/{uuid}/{id}";
         HttpHeaders headers = new HttpHeaders();
@@ -58,7 +58,7 @@ public class VehicleRestClientService {
         Map<String, String> params = new HashMap<String, String>();
         params.put("uuid", teamUuid);
         params.put("id", String.valueOf(id));
-        ResponseEntity<VehicleDto> response = null;
+        /*ResponseEntity<VehicleDto> response = null;
         try {
             response = restTemplate.exchange(url, HttpMethod.PUT, request, VehicleDto.class, params);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -68,7 +68,7 @@ public class VehicleRestClientService {
         } catch (RestClientException e) {
             System.out.println(e.getMessage());
         }
-        return response;
+        return response;*/
     }
 
     public Double getDistanceBetweenCoords(Coord coord1,Coord coord2){
