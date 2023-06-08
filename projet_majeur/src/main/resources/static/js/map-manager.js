@@ -491,9 +491,13 @@ function displayVehicles(map) {
 
                 marker.bindPopup(popupContent);
 
-                // marker.on('popupopen', function() {
-                //     updateVehicleOptions(id);
-                // });
+                marker.on('popupopen', function() {
+                    marker.keepAtCenter = true;
+                });
+
+                marker.on('popupclose', function() {
+                    marker.keepAtCenter = false;
+                });
 
                 vehiclesMarkers_[id] = marker;
 
@@ -549,7 +553,6 @@ function undisplayVehicle(id) {
         delete vehiclesMarkers_[id];
     }
 }
-
 
 //fonction qui vérifie si un camion est en mouvement
 function isVehicleMoving(id) {
