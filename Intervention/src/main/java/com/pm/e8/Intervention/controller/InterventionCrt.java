@@ -44,8 +44,8 @@ public class InterventionCrt {
     }
 
     @PostMapping("/intervention/autoIntervention/{fireId}/{vehicleId}")
-    public void AutoIntervention(@PathVariable int fireId, @PathVariable int vehicleId,@RequestBody List<Coordonnees> coordList){
-        interventionService.AutoIntervention(fireId,vehicleId,coordList);
+    public void AutoIntervention(@PathVariable int fireId, @PathVariable int vehicleId){
+        interventionService.AutoIntervention(fireId,vehicleId);
     }
 
 /*
