@@ -295,6 +295,6 @@ public class VehicleService {
                 }
             }
         }
-        return fireTypeVehicleMap;
+        return fireTypeVehicleMap; //c'est ok
     }
 }
