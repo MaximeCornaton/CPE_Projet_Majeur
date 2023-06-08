@@ -55,12 +55,6 @@ public class VehicleService {
         }
     }
 
-    public List<Vehicle> getPumpers(){
-        return vRepo.findByType("PUMPER_TRUCK");
-    }
-
-
-
     public void moveAllVehicles() {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
