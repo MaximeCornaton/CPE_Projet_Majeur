@@ -59,7 +59,7 @@ public class VehicleService {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
             Coordonnees coord = cRepo.findTopByVehicleIdOrderByIdAsc(vehicle.getId()).orElseThrow();
-            //Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
+            Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
             cRepo.delete(coord);
             //System.out.println(vRepo.save(newVehicle));
         }
@@ -198,7 +198,6 @@ public class VehicleService {
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
                 fireAvailable.add(fireDto.getId());
-                found = true;
                 try {
                     if (fireRestClientService.getFireDtoById(fireDto.getId()).getType().equals("E_Electric")){
                         found = true;
@@ -217,7 +216,7 @@ public class VehicleService {
         }
         Vehicle vehicle = null;
         for (Vehicle vehicleC: currentListVehicle) {
-            if (vehicleC.getId() == vehicleDto.getId()){
+            if (vehicleC.getId().equals(vehicleDto.getId())){
                 vehicle = vehicleC;
             }
         }
