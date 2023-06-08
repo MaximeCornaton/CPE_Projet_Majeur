@@ -110,13 +110,10 @@ public class VehicleRestClientService {
 
     }
 
-    public VehicleDto addVehicle(VehicleDto vDTO){
+    public void addVehicle(VehicleDto vDTO){
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/vehicle/{uuid}";
         VehicleDto response = restTemplate.postForObject(url, vDTO, VehicleDto.class);
-
-        assert response != null;
-        return response;
     }
 
 
