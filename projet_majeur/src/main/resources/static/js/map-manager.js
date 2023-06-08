@@ -1,4 +1,5 @@
 map = createMap('map');
+map.doubleClickZoom.disable();
 
 const DataInterval = 1000;
 const DisplayInterval = 1000;
@@ -181,12 +182,12 @@ function updateMarkerIcon(marker, icon) {
 
 //fonction pour deplacer un marqueur
 function moveMarker(marker, lat, lng) {
-    marker.setLatLng([lat, lng]);
+    //marker.setLatLng([lat, lng]);
 
-    // marker.slideTo(	[lat, lng], {
-    //     duration: DataInterval,
-    //     keepAtCenter: false
-    // });
+    marker.slideTo(	[lat, lng], {
+        duration: DataInterval,
+        keepAtCenter: false
+    });
 }
 
 //fonction qui supprime un marqueur
@@ -552,7 +553,14 @@ function undisplayVehicle(id) {
 
 //fonction qui vérifie si un camion est en mouvement
 function isVehicleMoving(id) {
-    return vehiclesMarkers_[id].getLatLng().lat !== vehicles_[id].lat || vehiclesMarkers_[id].getLatLng().lng !== vehicles_[id].lon;
+    getInterventionsInProgress().then(interventions => {
+        for (const intervention of interventions) {
+            if (intervention.vehicleId === id) {
+                return true;
+            }
+        }
+        return false;
+    });
 }
 
 //fonction qui verifie si un camion est dans une caserne
@@ -599,7 +607,6 @@ function refreshData() {
 }
 
 function initMap() {
-    map.doubleClickZoom.disable();
     refreshData();
     toggleLayer(areasLayer);
     displayData(map);
