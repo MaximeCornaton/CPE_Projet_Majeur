@@ -157,7 +157,7 @@ settingsButton.addTo(map);
 
 //fonction qui cree la carte
 function createMap(divId) {
-    let map = L.map(divId).setView([45.7735, 4.8745], 13);
+    let map = L.map(divId).setView([45.7735, 4.8745], 12);
     L.tileLayer('https://api.mapbox.com/styles/v1/maximecrnt/cli36w9f700ko01pgahnu8l6o/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWF4aW1lY3JudCIsImEiOiJjbGkzNmdzbW4wcTJtM2ZvM2Z4azYxbTcwIn0.AmmVszgHGmq9KMbzdmhe7A', {
         attribution: 'Map data &copy; <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
