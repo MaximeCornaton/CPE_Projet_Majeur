@@ -37,7 +37,7 @@ public class InterventionService {
 
         Intervention I = new Intervention(fireId, vehicleId);
         for(Intervention i : iRepo.findAll()){
-            if((i.getIdFire() == fireId || I.getIdFire() == -1)){
+            if((i.getIdFire() == fireId || fireId == -1)){
                 return;
             }
         }
@@ -58,18 +58,20 @@ public class InterventionService {
         String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
         List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> coordonneesList = new ArrayList<>();
+
         for(Coord c : coordList){
             coordonneesList.add(new Coordonnees(c.getLon(),c.getLat()));
         }
         for(Intervention i : iRepo.findAll()){
-            if(i.getIdFire() == fireId){
+            if(i.getIdFire() == fireId || fireId == -1){
                 return;
             }
         }
 
         Intervention I = new Intervention(fireId, vehicleId);
         I.setCoordonnees(coordonneesList);
-        iRepo.save(I);
+        System.out.println(I);
+        System.out.println(iRepo.save(I));
 
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
         vehicleRestClientService.createIntervention(vehicleId, new Coord(fire.getLon(),fire.getLat()));

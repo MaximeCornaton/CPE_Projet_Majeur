@@ -9,11 +9,13 @@ import java.util.List;
 public class Intervention {
     @Id
     @GeneratedValue
+    @Column(name = "intervention_id")
     private int id;
     private int idFire;
     private int idVehicle;
     private Status status = Status.EN_COURS;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "intervention")
+    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "intervention")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Coordonnees> coordonneesList;
 
     public Intervention() {
@@ -62,5 +64,16 @@ public class Intervention {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Intervention{" +
+                "id=" + id +
+                ", idFire=" + idFire +
+                ", idVehicle=" + idVehicle +
+                ", status=" + status +
+                ", coordonneesList=" + coordonneesList +
+                '}';
     }
 }
