@@ -58,17 +58,17 @@ public class VehicleRestClientService {
         Map<String, String> params = new HashMap<String, String>();
         params.put("uuid", teamUuid);
         params.put("id", String.valueOf(id));
-        /*ResponseEntity<VehicleDto> response = null;
+        ResponseEntity<VehicleDto> response = null;
         try {
             response = restTemplate.exchange(url, HttpMethod.PUT, request, VehicleDto.class, params);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            System.out.println("Error");
+            /*System.out.println("Error");
             System.out.println(e.getStatusCode());
-            System.out.println(e.getResponseBodyAsString());
+            System.out.println(e.getResponseBodyAsString());*/
         } catch (RestClientException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         }
-        return response;*/
+        //return response;
     }
 
     public Double getDistanceBetweenCoords(Coord coord1,Coord coord2){

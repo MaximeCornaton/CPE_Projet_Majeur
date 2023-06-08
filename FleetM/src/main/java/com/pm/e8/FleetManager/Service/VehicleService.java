@@ -96,7 +96,7 @@ public class VehicleService {
         if(!hasEnoughFuel(vehicle,coord)){
             throw new NotEnoughFuelException("Not enough fuel");
         }
-        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/100);
+        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> futurCoordList = new ArrayList<>();
         for(Coord c : coordList){
             Coordonnees tempCoord = new Coordonnees(c.getLon(),c.getLat());
@@ -108,7 +108,7 @@ public class VehicleService {
         lastCoord.setVehicle(vehicle);
         futurCoordList.add(lastCoord);
 
-        interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget());
+        //interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget());
 
         vehicle.setCoordonnees(futurCoordList);
         vehicle.setInMovement(true);
@@ -164,7 +164,7 @@ public class VehicleService {
             FacilityDto facilityDto = facilityRestClientService.getFacility(vehicleDto.getFacilityRefID());
 
             if(vehicleDto.getLiquidQuantity() < 1 && vehicleDto.getLon() != facilityDto.getLon() && vehicleDto.getLat() != facilityDto.getLat() && !vehicle.isInMovement()){ //il faut trouver un moyen de regarder s'il est en mouvement, sinon il recrée une list de coordonnées qui sera re exéxutée apres son premier trahet
-               System.out.println(vehicle.getId() + " retourne à la caserne et n'est pas en mouvement: " + vehicle.isInMovement());
+                System.out.println(vehicle.getId() + " retourne à la caserne et n'est pas en mouvement: " + vehicle.isInMovement());
                 this.backToFacility(vehicleDto,facilityDto);
                 vehicle.setInMovement(true);
                 vRepo.save(vehicle);

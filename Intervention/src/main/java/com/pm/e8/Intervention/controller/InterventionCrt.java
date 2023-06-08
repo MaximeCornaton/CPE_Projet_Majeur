@@ -45,6 +45,7 @@ public class InterventionCrt {
 
     @PostMapping("/intervention/autoIntervention/{fireId}/{vehicleId}")
     public void AutoIntervention(@PathVariable int fireId, @PathVariable int vehicleId){
+        System.out.println("REQUETE RECUE ");
         interventionService.AutoIntervention(fireId,vehicleId);
     }
 

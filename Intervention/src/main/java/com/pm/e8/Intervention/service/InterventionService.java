@@ -31,10 +31,13 @@ public class InterventionService {
     }
 
     public void AutoIntervention(int fireId, int vehicleId) {
-        FireDto fire = fireRestClientService.getFire(fireId);
-        LiquidType liquidType = getMostEfficientLiquid(fire.getType());
+        System.out.println();
+        LiquidType liquidType = LiquidType.ALL;
 
         try {
+            FireDto fire = fireRestClientService.getFire(fireId);
+            System.out.println(fire.getId() + " " + fire.getType());
+            liquidType = getMostEfficientLiquid(fire.getType());
             liquidType = getMostEfficientLiquid(fire.getType());
             System.out.println(liquidType);
         } catch (Exception e) {
@@ -110,16 +113,19 @@ public class InterventionService {
 
     private List<Coordonnees> getTrajetList(int vehicleId, int fireId) {
         FireDto fire = fireRestClientService.getFire(fireId);
-
+        List<Coordonnees> coordonneesList;
         VehicleDto vehicle = vehicleRestClientService.getVehicle(vehicleId);
+        try {
+            Coord coord = new Coord(fire.getLon(), fire.getLat());
+            String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(), vehicle.getLat()), coord);
+            List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed() / 1000);
+            coordonneesList = new ArrayList<>();
 
-        Coord coord = new Coord(fire.getLon(),fire.getLat());
-        String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
-        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
-        List<Coordonnees> coordonneesList = new ArrayList<>();
-
-        for(Coord c : coordList){
-            coordonneesList.add(new Coordonnees(c.getLon(),c.getLat()));
+            for (Coord c : coordList) {
+                coordonneesList.add(new Coordonnees(c.getLon(), c.getLat()));
+            }
+        } catch (Exception e) {
+            coordonneesList = new ArrayList<>();
         }
         return coordonneesList;
     }

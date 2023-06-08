@@ -22,15 +22,19 @@ public class FireRestClientService {
         }
     }
 
-    public FireDto getFire(int fireId) {
+    public FireDto getFire(int id) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/fires/{id}";
-        ResponseEntity<FireDto> response = restTemplate.getForEntity(url, FireDto.class, fireId);
-        if(response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
-        } else {
+        String Url = "http://vps.cpe-sn.fr:8081/fire/{id}";
+        FireDto fireDto = restTemplate.getForObject(Url, FireDto.class, id);
+        try {
+            if (fireDto == null) {
+                throw new Exception("No fire found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
+        return fireDto;
     }
 
     public List<FireDto> getFires(){
