@@ -1,5 +1,6 @@
 package com.pm.e8.Intervention.service;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.google.common.collect.Lists;
 import com.pm.e8.Intervention.model.Coordonnees;
 import com.pm.e8.Intervention.model.Intervention;
@@ -31,13 +32,19 @@ public class InterventionService {
         this.mapRestClientService = mapRestClientService;
     }
 
-    public void AutoIntervention(int fireId, int vehicleId, List<Coordonnees> coordList){
+    public void AutoIntervention(int fireId, int vehicleId, List<Coordonnees> coordList) {
         FireDto fire = fireRestClientService.getFire(fireId);
-        LiquidType liquidType = getMostEfficientLiquid(fire.getType());
+        LiquidType liquidType = LiquidType.ALL;
+        try {
+            liquidType = getMostEfficientLiquid(fire.getType());
+            System.out.println(liquidType);
+        } catch (Exception e) {
+            System.out.println("No liquid type found");
+        }
 
         Intervention I = new Intervention(fireId, vehicleId);
-        for(Intervention i : iRepo.findAll()){
-            if((i.getIdFire() == fireId || fireId == -1)){
+        for (Intervention i : iRepo.findAll()) {
+            if ((i.getIdFire() == fireId || fireId == -1)) {
                 return;
             }
         }
@@ -70,8 +77,9 @@ public class InterventionService {
 
         Intervention I = new Intervention(fireId, vehicleId);
         I.setCoordonnees(coordonneesList);
-        System.out.println(I);
+
         System.out.println(iRepo.save(I));
+        System.out.println(iRepo.findAll());
 
         vehicleRestClientService.updateVehicleLiquidType(vehicleId, liquidType);
         vehicleRestClientService.createIntervention(vehicleId, new Coord(fire.getLon(),fire.getLat()));
@@ -90,12 +98,12 @@ public class InterventionService {
         return mostEfficient;
     }
 
-    public List<Intervention> getInterventions(){
-        return Lists.newArrayList(iRepo.findAll());
+    public Iterable<Intervention> getInterventions(){
+        return iRepo.findAll();
     }
 
     public void cleanInter(){
-        List<Intervention> InterventionList = getInterventions();
+        Iterable<Intervention> InterventionList = getInterventions();
         for(Intervention i : InterventionList){
             if(i.getStatus().equals(Status.TERMINEE)){
                 iRepo.delete(i);

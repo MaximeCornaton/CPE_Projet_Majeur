@@ -9,7 +9,6 @@ import java.util.List;
 public class Intervention {
     @Id
     @GeneratedValue
-    @Column(name = "intervention_id")
     private int id;
     private int idFire;
     private int idVehicle;
@@ -46,15 +45,15 @@ public class Intervention {
         return idFire;
     }
 
-    protected void setIdFire(int idFire) {
+    public void setIdFire(int idFire) {
         this.idFire = idFire;
     }
 
-    protected int getIdVehicle() {
+    public int getIdVehicle() {
         return idVehicle;
     }
 
-    protected void setIdVehicle(int idVehicle) {
+    public void setIdVehicle(int idVehicle) {
         this.idVehicle = idVehicle;
     }
 

@@ -24,7 +24,7 @@ public class InterventionCrt {
     }
 
     @GetMapping("/interventions")
-    public List<Intervention> getInterventions(){
+    public Iterable<Intervention> getInterventions(){
         return interventionService.getInterventions();
     }
 

@@ -46,7 +46,7 @@ public class Coordonnees {
         this.lat = lat;
     }
 
-    public Intervention getIntervention() {
+    private Intervention getIntervention() {
         return intervention;
     }
 
