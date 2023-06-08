@@ -10,12 +10,13 @@ public class Coordonnees {
     private double lon;
     private double lat;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "intervention_id", nullable = false)
+    //@JoinColumn(name = "intervention_id", nullable = false)
     private Intervention intervention;
 
     public Coordonnees(double lon, double lat) {
         this.lon = lon;
         this.lat = lat;
+
     }
 
     public Coordonnees() {
@@ -51,5 +52,10 @@ public class Coordonnees {
 
     public void setIntervention(Intervention intervention) {
         this.intervention = intervention;
+    }
+
+    @Override
+    public String toString() {
+        return "lon: " + lon + "-lat: " + lat;
     }
 }
