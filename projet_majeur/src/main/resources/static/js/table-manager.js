@@ -143,7 +143,6 @@ function createTableWithDelete(promise) {
 
 
 function tableVehicles() {
-    createTableWithDelete(getVehicles());
 
     function updateTable() {
         createTableWithDelete(getVehicles());
@@ -156,7 +155,6 @@ function tableVehicles() {
 }
 
 function tableFires() {
-    createTable(getFires());
 
     function updateTable() {
         createTable(getFires());
@@ -169,7 +167,6 @@ function tableFires() {
 }
 
 function tableFireStation() {
-    createTable(getFireStation());
 
     function updateTable() {
         createTable(getFireStation());
@@ -182,14 +179,27 @@ function tableFireStation() {
 }
 
 function tableInterventions() {
-    createTable(getInterventions());
-
-    function updateTable() {
-        createTable(getInterventions());
+    const filter = 'all';
+    function getInterventionsWithFilter(filter) {
+        if(filter === 'all') {
+            return getInterventions();
+        } else if(filter === 'inProgress') {
+            return getInterventionsInProgress();
+        } else if(filter === 'finished') {
+            return getInterventionsDone();
+        }
     }
 
-    // Actualiser le tableau toutes les secondes
-    setInterval(updateTable, 1000);
+    function updateTable(filter) {
+        createTable(getInterventionsWithFilter(filter));
+    }
 
-    updateTable();
+    setInterval(function() {
+        updateTable(filter);
+    }, 1000);
+
+    updateTable('all');
+
+    const filters = document.querySelectorAll('.filter');
+    console.log(filters);
 }
