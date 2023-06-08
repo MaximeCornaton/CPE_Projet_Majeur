@@ -1,7 +1,6 @@
 package com.pm.e8.Intervention.service;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-import com.google.common.collect.Lists;
+
 import com.pm.e8.Intervention.model.Coordonnees;
 import com.pm.e8.Intervention.model.Intervention;
 import com.pm.e8.Intervention.model.Status;
@@ -11,7 +10,6 @@ import com.project.model.dto.Coord;
 import com.project.model.dto.FireDto;
 import com.project.model.dto.LiquidType;
 import com.project.model.dto.VehicleDto;
-import org.checkerframework.checker.nullness.qual.AssertNonNullIfNonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
