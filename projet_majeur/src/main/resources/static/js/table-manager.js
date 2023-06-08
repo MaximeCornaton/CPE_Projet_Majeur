@@ -192,7 +192,11 @@ function tableInterventions() {
     }
 
     function updateTable(filter) {
-        //createTable(getInterventionsWithFilter(filter));
+        createTable(getInterventionsWithFilter(filter));
+    }
+
+    function createTable(promises) {
+        console.log(promises);
     }
 
     setInterval(function() {
