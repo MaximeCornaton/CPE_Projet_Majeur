@@ -196,7 +196,7 @@ function tableInterventions() {
     }
 
     function createTable(promises) {
-        console.log(promises);
+
     }
 
     setInterval(function() {
