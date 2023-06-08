@@ -2,6 +2,7 @@ package com.pm.e8.FacilityManager.service;
 
 import com.pm.e8.FacilityManager.model.Facility;
 import com.pm.e8.FacilityManager.repository.FacilityRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class FacilityScheduler {
         this.fRepo = fRepo;
     }
 
-    @Scheduled(fixedRate = 5000)
+    @PostConstruct
     public void UpdateBDD() {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://vps.cpe-sn.fr:8081/facility";
