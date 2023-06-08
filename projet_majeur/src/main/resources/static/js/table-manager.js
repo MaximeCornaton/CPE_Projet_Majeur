@@ -54,7 +54,6 @@ function createTable(promise) {
 
 
 
-
 function tableVehicles() {
 
     function createDeleteButton(vehicleId) {
@@ -193,7 +192,7 @@ function tableInterventions() {
     }
 
     function updateTable(filter) {
-        createTable(getInterventionsWithFilter(filter));
+        //createTable(getInterventionsWithFilter(filter));
     }
 
     setInterval(function() {
@@ -203,5 +202,10 @@ function tableInterventions() {
     updateTable('all');
 
     const filters = document.querySelectorAll('.filter');
-    console.log(filters);
+    filters.forEach(filterElement => {
+        filterElement.addEventListener('click', function(event) {
+            const filter = event.target.getAttribute('data-filter');
+            updateTable(filter);
+        });
+    });
 }
