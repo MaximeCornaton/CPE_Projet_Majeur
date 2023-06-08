@@ -39,7 +39,7 @@ public class VehicleService {
         this.fireAvailable = new ArrayList<>();
     }
 
-    public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
+    /*public ResponseEntity<VehicleDto> moveVehicle(int id, Coord coord) {
         ResponseEntity<VehicleDto> responseEntity = vehicleRestClientService.moveVehicle(id,coord);
         if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
             VehicleDto vehicleDto = responseEntity.getBody();
@@ -53,13 +53,14 @@ public class VehicleService {
             System.out.println("Failed to move vehicle: " + (responseEntity != null ? responseEntity.getStatusCode() : "No response"));
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
         }
-    }
+    }*/
 
     public void moveAllVehicles() {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
             Coordonnees coord = cRepo.findTopByVehicleIdOrderByIdAsc(vehicle.getId()).orElseThrow();
-            Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
+            vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat()));
+            //Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
             cRepo.delete(coord);
             //System.out.println(vRepo.save(newVehicle));
         }

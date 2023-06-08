@@ -557,14 +557,17 @@ function undisplayVehicle(id) {
 
 //fonction qui vérifie si un camion est en mouvement
 function isVehicleMoving(id) {
+    //TODO: vérifier si le camion est en mouvement
+    val_ren = false;
     getInterventionsInProgress().then(interventions => {
         for (const intervention of interventions) {
-            if (intervention.vehicleId === id) {
-                return true;
+            if (intervention.idVehicle == id) {
+                val_ren = true;
             }
         }
-        return false;
+
     });
+    return val_ren;
 }
 
 //fonction qui verifie si un camion est dans une caserne
