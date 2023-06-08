@@ -280,8 +280,8 @@ function displayFireStations(map) {
                             &#x25A0;  <span style="font-size: smaller;"> ${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType}  </span><br>
                         `;
                     }else{
-                        popupContent += `
-    &#x25A0; <span style="color: #ff0000;font-size: smaller;cursor: pointer">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType}    </span><button onclick="returnVehicleToFireStation('${vehicle.id}');" class="btn-circle btn-sm"><i class="fas fa-home"></i></button><br>
+                        popupContent += ` &#x25A0; <span style="color: #ff0000;font-size: smaller;cursor: pointer">${vehicle.type} - ${vehicle.id} - ${vehicle.liquidType}    </span>   <a style="color: white;" href="#" onclick="returnVehicleToFireStation('${vehicle.id}');" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="fas fa-home"></i> </a><br>
                         `;
 
                     }
@@ -379,6 +379,7 @@ function displayFires(map) {
                             
                             ${getVehicleOptions(fire.type, `option-${fire.id}`)}
                         </select>
+                        
                         <button onclick="sendVehicle(${fire.id}, document.getElementById('selectVehicle-${fire.id}').value)">Envoyer</button>
                     `;
 
