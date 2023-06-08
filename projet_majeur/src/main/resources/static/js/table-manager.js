@@ -233,9 +233,9 @@ function tableInterventions() {
     }
 
 
-    setInterval(function() {
-        updateTable(filter);
-    }, 1000);
+    // setInterval(function() {
+    //     updateTable(filter);
+    // }, 1000);
 
     updateTable('all');
 
