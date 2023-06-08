@@ -64,7 +64,7 @@ public class Fire {
         this.lat = lat;
     }
 
-    private Coord getCoord() {
+    protected Coord getCoord() {
         return new Coord(this.lon, this.lat);
     }
 
