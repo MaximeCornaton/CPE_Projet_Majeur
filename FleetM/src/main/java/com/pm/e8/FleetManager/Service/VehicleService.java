@@ -65,7 +65,7 @@ public class VehicleService {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
             Coordonnees coord = cRepo.findTopByVehicleIdOrderByIdAsc(vehicle.getId()).orElseThrow();
-            Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
+            //Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
             cRepo.delete(coord);
             //System.out.println(vRepo.save(newVehicle));
         }
