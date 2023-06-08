@@ -59,9 +59,9 @@ public class VehicleService {
         List<Vehicle> vehicleToMove = vRepo.findByCoordonneesListIsNotEmpty();
         for(Vehicle vehicle : vehicleToMove) {
             Coordonnees coord = cRepo.findTopByVehicleIdOrderByIdAsc(vehicle.getId()).orElseThrow();
-            Vehicle newVehicle = new Vehicle(Objects.requireNonNull(this.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
+            Vehicle newVehicle = new Vehicle(Objects.requireNonNull(vehicleRestClientService.moveVehicle(vehicle.getId(), new Coord(coord.getLon(), coord.getLat())).getBody()));
             cRepo.delete(coord);
-            System.out.println(vRepo.save(newVehicle));
+            //System.out.println(vRepo.save(newVehicle));
         }
     }
 
@@ -92,14 +92,11 @@ public class VehicleService {
         VehicleDto vehicleDto = this.getVehicleById(id);
         Vehicle vehicle = new Vehicle(vehicleDto);
         String polyline = mapRestClientService.getPolyline(new Coord(vehicle.getLon(),vehicle.getLat()),coord);
-
         if(!hasEnoughFuel(vehicle,coord)){
             throw new NotEnoughFuelException("Not enough fuel");
         }
-
         List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
         List<Coordonnees> futurCoordList = new ArrayList<>();
-
         for(Coord c : coordList){
             Coordonnees tempCoord = new Coordonnees(c.getLon(),c.getLat());
             tempCoord.setVehicle(vehicle);
@@ -110,7 +107,7 @@ public class VehicleService {
         lastCoord.setVehicle(vehicle);
         futurCoordList.add(lastCoord);
 
-        //interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget());
+        interventionRestClientService.AutoInter(vehicle.getId(),vehicle.getTarget());
 
         vehicle.setCoordonnees(futurCoordList);
         vehicle.setInMovement(true);
@@ -201,7 +198,6 @@ public class VehicleService {
             FireDto fireDto = fireDtoList.get(id);
             if (fireAvailable.isEmpty()){
                 fireAvailable.add(fireDto.getId());
-                found = true;
                 try {
                     if (fireRestClientService.getFireDtoById(fireDto.getId()).getType().equals("E_Electric")){
                         found = true;
@@ -220,7 +216,7 @@ public class VehicleService {
         }
         Vehicle vehicle = null;
         for (Vehicle vehicleC: currentListVehicle) {
-            if (vehicleC.getId() == vehicleDto.getId()){
+            if (vehicleC.getId().equals(vehicleDto.getId())){
                 vehicle = vehicleC;
             }
         }
@@ -282,6 +278,7 @@ public class VehicleService {
     }
 
     public void deleteVehicle(int id) {
+        VehicleDto vehicleDto = vehicleRestClientService.getVehicleById(id);
         vehicleRestClientService.deleteVehicleRest(id);
     }
 
