@@ -1,7 +1,7 @@
 map = createMap('map');
 
 const DataInterval = 1000;
-const DisplayInterval = 100;
+const DisplayInterval = 1000;
 
 const vehicles_ = {};
 const fires_ = {};
