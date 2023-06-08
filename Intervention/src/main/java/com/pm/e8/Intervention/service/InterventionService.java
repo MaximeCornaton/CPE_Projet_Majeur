@@ -77,7 +77,7 @@ public class InterventionService {
     }
 
     private LiquidType getMostEfficientLiquid(String type) {
-        LiquidType mostEfficient = null;
+        LiquidType mostEfficient = LiquidType.ALL;
         float maxEfficiency = -1;
         for (LiquidType liquidType : LiquidType.values()) {
             float efficiency = liquidType.getEfficiency(type);
