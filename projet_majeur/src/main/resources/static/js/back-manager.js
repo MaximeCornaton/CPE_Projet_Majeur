@@ -97,7 +97,10 @@ function getInterventions() {
         headers: {
             "Content-Type": "application/json"
         },
-    })
+    })        .then(response => response.json())
+        .catch(error => {
+            console.error('Une erreur s\'est produite:', error);
+        });
 }
 
 //fonction pour recuperer les interventions terminees
@@ -107,7 +110,10 @@ function getInterventionsDone() {
         headers: {
             "Content-Type": "application/json"
         },
-    })
+    })        .then(response => response.json())
+        .catch(error => {
+            console.error('Une erreur s\'est produite:', error);
+        });
 }
 
 //fonction pour recuperer les interventions en cours
@@ -117,7 +123,10 @@ function getInterventionsInProgress() {
         headers: {
             "Content-Type": "application/json"
         },
-    })
+    })        .then(response => response.json())
+        .catch(error => {
+            console.error('Une erreur s\'est produite:', error);
+        });
 }
 
 async function getFireTypes() {

@@ -1,5 +1,8 @@
 map = createMap('map');
 
+const DataInterval = 1000;
+const DisplayInterval = 100;
+
 const vehicles_ = {};
 const fires_ = {};
 const fireStations_ = {};
@@ -75,7 +78,6 @@ const settingsControl = L.Control.extend({
         fireMenu.style.right = '0';
         fireMenu.style.backgroundColor = 'white';
         fireMenu.style.padding = '10px';
-        //fireMenu.style.borderRadius = '5px';
         fireMenu.style.boxShadow = '0 0 6px rgba(0, 0, 0, 0.3)';
         fireMenu.style.width = '200px';
         fireMenu.style.display = 'flex';
@@ -95,7 +97,7 @@ const settingsControl = L.Control.extend({
                 fireTypeOption.innerHTML = fireType_;
                 fireType.appendChild(fireTypeOption);
             }
-        );
+            );
         });
 
         const textIntensite = L.DomUtil.create('p', 'leaflet-touch leaflet-control-custom', fireMenu);
@@ -175,6 +177,16 @@ function createMarker(layer, lat, lon, icon) {
 //fonction qui modifie l'icon du marqueur
 function updateMarkerIcon(marker, icon) {
     marker.setIcon(icon);
+}
+
+//fonction pour deplacer un marqueur
+function moveMarker(marker, lat, lng) {
+    marker.setLatLng([lat, lng]);
+
+    // marker.slideTo(	[lat, lng], {
+    //     duration: DataInterval,
+    //     keepAtCenter: false
+    // });
 }
 
 //fonction qui supprime un marqueur
@@ -495,10 +507,11 @@ function displayVehicles(map) {
                         vehiclesMarkers_[id].setIcon(icon_fire_truck);
                     }
                 }
-                vehiclesMarkers_[id].setLatLng([vehicle.lat, vehicle.lon]);
+                moveMarker(vehiclesMarkers_[id], vehicle.lat, vehicle.lon);
             }
         }
     }
+
 
     // Supprimer les marqueurs des véhicules qui n'existent plus
     for (const id in vehiclesMarkers_) {
@@ -594,10 +607,10 @@ function initMap() {
 
 setInterval(function() {
     displayData(map);
-}, 100);
+}, DisplayInterval);
 
 setInterval(function() {
     refreshData();
-}, 1000);
+}, DataInterval);
 
 initMap();
