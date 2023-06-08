@@ -28,17 +28,17 @@ public class InterventionCrt {
         return interventionService.getInterventions();
     }
 
-    @DeleteMapping("/intervention/clean")
+    @DeleteMapping("/interventions/clean")
     public void cleanInter(){
         interventionService.cleanInter();
     }
 
-    @GetMapping("/intervention/done")
+    @GetMapping("/interventions/done")
     public List<Intervention> doneIntervention(){
         return interventionService.doneIntervention();
     }
 
-    @GetMapping("/intervention/inProgress")
+    @GetMapping("/interventions/inProgress")
     public List<Intervention> inProgressIntervention(){
         return interventionService.inProgressIntervention();
     }
