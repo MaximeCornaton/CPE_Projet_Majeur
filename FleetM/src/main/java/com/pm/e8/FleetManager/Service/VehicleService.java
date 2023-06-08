@@ -96,7 +96,7 @@ public class VehicleService {
         if(!hasEnoughFuel(vehicle,coord)){
             throw new NotEnoughFuelException("Not enough fuel");
         }
-        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/1000);
+        List<Coord> coordList = PolylineSplitter.cutPolyline(polyline, vehicle.getType().getMaxSpeed()/100);
         List<Coordonnees> futurCoordList = new ArrayList<>();
         for(Coord c : coordList){
             Coordonnees tempCoord = new Coordonnees(c.getLon(),c.getLat());
